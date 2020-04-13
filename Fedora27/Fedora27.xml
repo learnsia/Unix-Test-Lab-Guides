@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="UTF-8"?><?asciidoc-toc?><?asciidoc-numbered?><article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Test Lab Guide </title>
+<subtitle>Fedora Base Lab Configuration</subtitle>
+<date>2020-04-13</date>
+</info>
+<section xml:id="_abstract">
+<title>Abstract</title>
+<simpara>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using Fedora servers and a Fedora client. Those acquainted with the Microsoft TLG documentation will find the format familiar. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the Fedora Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a Fedora based environment.</simpara>
+</section>
+<section xml:id="_introduction">
+<title>Introduction</title>
+<simpara>The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.</simpara>
+<simpara>This TLG is written with the goals of reusability and extensibility in mind. The purpose of this particular TLG is to enable the creation of a basic network utilizing Fedora as the central operating system. Once this network is complete several other TLGs can be built on top of this base configuration.</simpara>
+<simpara>Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.</simpara>
+</section>
+<section xml:id="_disclaimer">
+<title>Disclaimer</title>
+<simpara>This website contains work created for informational purposes.
+Information may be out of date, or changed or updated without notice. By
+using this website, you recognize and agree that all information is provided
+“AS IS” without warranty of any kind, either express or implied, including,
+but not limited to, the implied warranties of merchantability, fitness for a
+particular purpose, or non-infringement.</simpara>
+<simpara>The entire risk arising out of the use of these guides remains with you. IN
+NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY,
+OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION,
+OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR
+ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL
+DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This
+includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides</simpara>
+</section>
+<section xml:id="_contents_of_this_guide">
+<title>Contents of This Guide</title>
+<simpara>This document contains instructions for settings up the Fedora base configuration test lab by deploying two servers running Fedora, one client running Fedora and one firewall built on Fedora. Once completed, the lab will simulate the functioning of a private intranet.</simpara>
+<simpara><emphasis role="strong">Important</emphasis>: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual).</simpara>
+<section xml:id="_network_overview">
+<title>Network Overview</title>
+<simpara>The Fedora Base Configuration test lab consists of the following:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>One server running Fedora Server 27 named FW1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>IP Address: 192.168.240.1</simpara>
+</listitem>
+<listitem>
+<simpara>Gateway: N/A</simpara>
+</listitem>
+<listitem>
+<simpara>DNS Server: 192.168.240.5</simpara>
+</listitem>
+<listitem>
+<simpara>Hostname: firewall.business.com</simpara>
+</listitem>
+<listitem>
+<simpara>Two NICs configured to handle traffic between the intranet and the external Internet connection</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>One server running Fedora Server 27 named DC1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>IP Address: 192.168.240.5</simpara>
+</listitem>
+<listitem>
+<simpara>Gateway: 192.168.240.1</simpara>
+</listitem>
+<listitem>
+<simpara>DNS Server: 192.168.240.5 (localhost)</simpara>
+</listitem>
+<listitem>
+<simpara>Hostname: dc1.business.com</simpara>
+</listitem>
+<listitem>
+<simpara>Configured as the intranet Domain Name System (DNS), and Dynamic Host Configuration Protocol (DHCP) server</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>One server running Fedora Server 27 named APP1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>IP Address: 192.168.240.10</simpara>
+</listitem>
+<listitem>
+<simpara>Gateway: 192.168.240.1</simpara>
+</listitem>
+<listitem>
+<simpara>DNS Server: 192.168.240.5</simpara>
+</listitem>
+<listitem>
+<simpara>Hostname: app1.business.com</simpara>
+</listitem>
+<listitem>
+<simpara>Configured on the intranet as a web and application server</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>One client running Fedora Workstation 27 named CLIENT1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>IP Address: 192.168.240.15</simpara>
+</listitem>
+<listitem>
+<simpara>Gateway: 192.168.240.1</simpara>
+</listitem>
+<listitem>
+<simpara>DNS Server: 192.168.240.5</simpara>
+</listitem>
+<listitem>
+<simpara>Hostname: client1.business.com</simpara>
+</listitem>
+<listitem>
+<simpara>Will have ability to switch between the intranet and Internet subnets</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+<simpara>The CentOS 7 Base Configuration TLG is comprised of one subnet:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>An intranet, known as the Internal subnet (192.168.240.0/24 in this example)</simpara>
+</listitem>
+</itemizedlist>
+<simpara>Network Diagram:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="networkdiagram.jpg"/>
+</imageobject>
+<textobject><phrase>Network Diagram for Fedora Environment</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>This document consists of four major parts:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Step 1: Configure FW1</simpara>
+</listitem>
+<listitem>
+<simpara>Step 2: Configure DC1</simpara>
+</listitem>
+<listitem>
+<simpara>Step 3: Configure APP1</simpara>
+</listitem>
+<listitem>
+<simpara>Step 4: Configure CLIENT1</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="_hardware_and_software_requirements">
+<title>Hardware and Software Requirements</title>
+<simpara>The following are the minimum required components for deploying the test lab:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>An installer disc or .iso file for Fedora Server 27, 64 bit</simpara>
+</listitem>
+<listitem>
+<simpara>An installer disc or .iso file for Fedora Workstation 27, 64 bit</simpara>
+</listitem>
+<listitem>
+<simpara>One machine that will meet the minimum install requirements for Fedora Server with 2 NICs</simpara>
+</listitem>
+<listitem>
+<simpara>Two machines that will meet the minimum install requirements for Fedora Server</simpara>
+</listitem>
+<listitem>
+<simpara>One machine that will meet the minimum install requirements for Fedora Workstation</simpara>
+</listitem>
+</itemizedlist>
+<simpara>If the environment will be deployed in a virtualized environment, the virtual solution must support Fedora virtual machines (or  virtual linux machines in general). The server hardware must support the amount for RAM required to run the virtual operating systems included in the base configuration test lab with space for expansion as required by the additional TLGs.</simpara>
+</section>
+</section>
+<section xml:id="_steps_for_configuring_the_network">
+<title>Steps for Configuring the Network</title>
+<simpara>This test network consists of four machines:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>FW1</simpara>
+</listitem>
+<listitem>
+<simpara>DC1</simpara>
+</listitem>
+<listitem>
+<simpara>APP1</simpara>
+</listitem>
+<listitem>
+<simpara>CLIENT1</simpara>
+</listitem>
+</orderedlist>
+<simpara>You must be logged on as a user who can execute <literal>sudo</literal> commands to complete this TLG. The steps to configure each machine are below.</simpara>
+<section xml:id="_step_one_configure_fw1">
+<title><emphasis role="strong">Step One</emphasis> - Configure FW1</title>
+<simpara>The FW1 machine will act as a firewall/router for the network. Configuring FW1 will consist of:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Installing the operating system - Fedora Server 27.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure TCP/IP properties.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure NAT rules.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_installing_the_operating_system">
+<title>Installing the Operating System</title>
+<simpara>The first step is to install Fedora Server 27  on the machine that will be used as the router.  The hardware for this machine must include two NICs if running the operating system in a physical environment. If utilizing a virtual environment, please ensure that the virtual machine for this system includes two network cards in its virtual hardware. Instructions on how to do this are below.</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start the installation using the installer disk or the .iso file and follow the installation prompts.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>When using VMware to install the operating system, many of the option will be prefilled.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>VMware will prompt for a username and password - it will create a non-sudo user and assign the OS root password.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Before clicking the finish button on the final window, click “Customize Hardware…”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Click “Add…” at the bottom.</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Network Adapter” and then finish.</simpara>
+</listitem>
+<listitem>
+<simpara>On “Network Adapter 2” click Custom.</simpara>
+</listitem>
+<listitem>
+<simpara>Click close, and finish the installation.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>During the installation process, create a user and give him administration rights. This is time sensitive, so make sure not to walk away from the OS while installing.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Click on “User Creation”.</simpara>
+</listitem>
+<listitem>
+<simpara>Click on the box “Make this user administrator”.</simpara>
+</listitem>
+<listitem>
+<simpara>Assign credentials.</simpara>
+</listitem>
+<listitem>
+<simpara>Click Apply</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Log on using the credentials created during the installation process</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_properties">
+<title>Configure TCP/IP Properties</title>
+<simpara>This operating has two NICs to be configured. One will act as the external network card and the other will act as the internal network card. It is important to be using an account that has <literal>sudo</literal> privileges or be in the root account, as many of the configurations require executive privilege. Commands noted with <literal>sudo</literal> can be executed without it if using a root user.</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Ensure that Network Manager is running by running the command <literal>systemctl status NetworkManager.service</literal>.  This command, like most commands, is caps sensitive.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>The output should be <literal>Active: active (running)</literal> in green.</simpara>
+</listitem>
+<listitem>
+<simpara>If not, enter the command <literal>sudo systemctl start NetworkManager.service</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Install nmtui, if not already installed.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo yum install NetworkManager-tui -y</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>sudo nmtui</literal> to enter the Network Manager</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Use the arrow keys to select "Edit Connection" for the internet-facing interface and then press "Enter"</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Use the arrow keys to ensure that "IPv4 CONFIGURATION" is set to "&lt;Automatic&gt;"</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that "Automatically connect" has and "[x]" in the brackets next to it.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "&lt;Back&gt;" and press Enter to return to the main menu.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "Edit Connection" for the internal-facing interface and press "Enter" to select.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Use the arrow keys to select "Manual" in the menu next to "IPv4 Configuration".</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "Show" next to the "IPv4 Configuration"</simpara>
+</listitem>
+<listitem>
+<simpara>Under "Addresses" add in <literal>192.168.240.1/24</literal> or an IP in the address range that you have selected for use in this lab.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that "Automatically connect" has and "[x]" in the brackets next to it.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "&lt;Back&gt;" and press Enter to return to the main menu.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "Quit" and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Set the hostname by running the command: <literal>sudo hostnamectl set-hostname firewall.business.com</literal></simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_routing_rules">
+<title>Configure Routing rules</title>
+<simpara>Enable IP forwarding:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Enable ipv4 forwarding with the command: <literal>sudo sysctl -w net.ipv4.ip_forward=1</literal></simpara>
+</listitem>
+<listitem>
+<simpara>To make sure that this setting is enabled use the command <literal>sudo sysctl net.ipv4.ip_forward</literal>. The console should print out <literal>net.ipt4.ip_forward = 1</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>If you restart your OS, you may have to reenter this command.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Recent editions of fedora use firewalld to manage networking; however, we are going to install and use iptables instead because it is a more direct communication with the networking functionality.</simpara>
+</listitem>
+<listitem>
+<simpara>Install and enable iptables-services:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo yum install iptables-services</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl mask firewalld.service</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl enable iptables.service</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Flush the current rules and NAT tables to ensure only the rules we create are being applied.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo iptables -F</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo iptables -t nat -F</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Configure the routing rules where eth0 is the external interface and eth1 is the internal interface.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Save the configuration using the command <literal>sudo service iptables save</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>The configuration can be checked with the command <literal>cat /etc/sysconfig/iptables</literal>. The result will show only the commands entered in step six.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="natrules.jpg"/>
+</imageobject>
+<textobject><phrase>Network Address Translation rules</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Stop firewalld and start iptables:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo systemctl stop firewalld.service</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl start iptables.service</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>This configuration can be tested by completing the client1 configuration in Step 2.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_step_two_configure_client1">
+<title><emphasis role="strong">Step Two</emphasis> - Configure CLIENT1</title>
+<simpara>This is typically the last step of a networking guide, but setting up all the services prior to having any means of testing can lead to a knot of configuration errors. By configuring the end user device initially, and adapting to the new network services continually, we can ensure that each service works as it goes up. Many of these settings will be changed in the future. A final configuration will be included in the appendix. Configuration steps for basic functionality include:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install the operating system - Fedora Workstation 27</simpara>
+</listitem>
+<listitem>
+<simpara>Configure the TCP/IP properties &amp; Test Configuration</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_operating_system">
+<title>Install Operating System</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Follow the prompts to install the operating system for Fedora Workstation 27.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select the appropriate language and then select “Continue”</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>On the Installation Summary Page:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select the options most appropriate to your keyboard and time/date selection.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="fedorainstallation.jpg"/>
+</imageobject>
+<textobject><phrase>Picture of fedora installation settings</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Everything under “Software” can be left as defaults.</simpara>
+</listitem>
+<listitem>
+<simpara>Under “System” select the “Installation Destination”.  We will leave everything as the defaults, but most confirm the options  by selecting “Done” in the top left corner.</simpara>
+</listitem>
+<listitem>
+<simpara>Now the “Begin Installation” box in the bottom right should have turned blue. Click on this button.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>While the operating system is installing create a root password and a user account.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>This is done by selecting each option, filling out the required information and hitting the “Done” button in the top left corner.  Please remember these accounts as they are how the machine will be accessed.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>At the end of the installation process you will be prompted to reboot the machine. After it reboots you will be able to login with the credentials setup in step three.</simpara>
+</listitem>
+<listitem>
+<simpara>On the first reboot you will be prompted to re-select some options. After going through this process the client will be ready to use.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_properties_test_configuration">
+<title>Configure TCP/IP properties &amp; Test Configuration</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>The network settings will be configured through the graphical user interface.</simpara>
+</listitem>
+<listitem>
+<simpara>Select the drop down menu in the top right corner by clicking on the small arrow next to the power symbol.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Wired Connection” and click on “Wired Settings”</simpara>
+</listitem>
+<listitem>
+<simpara>This will open a new dialogue box. Click on the small box with a gear under the “Wired” settings.</simpara>
+</listitem>
+<listitem>
+<simpara>This opens a new dialogue box. Select “Ipv4” along the top bar.</simpara>
+</listitem>
+<listitem>
+<simpara>Next to “IPv4” options select “Manual”</simpara>
+</listitem>
+<listitem>
+<simpara>Fill out the “Addresses” box with the IP address you wish to assign to the client, the netmask of the network (255.255.255.0) and the Gateway (the address of the router).</simpara>
+</listitem>
+<listitem>
+<simpara>Set DNS to “8.8.8.8”</simpara>
+</listitem>
+<listitem>
+<simpara>Select “Apply” in the top right corner to apply the settings</simpara>
+</listitem>
+<listitem>
+<simpara>Back on the Network Settings dialog box, click on the “On” button to turn the connection off. It should turn from blue to grey. Select once again to turn the settings back on. This ensures the settings are fully applied.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>If the network is configured properly and the router is functioning, the client will now be able to function.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Open a terminal by selecting “Activities” in the top left corner and typing <literal>cmd</literal> in to the search box. When “terminal” appears select it. This will open a command prompt.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>ping 8.8.8.8</literal> at the command line to check network connectivity. This should generate continuous responses.  Use <literal>ctrl + c</literal> to exit.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>ping www.google.com</literal> to test hostname resolution. This	 should generate continuous positive responses, and use <literal>ctrl + c</literal> to exit.</simpara>
+</listitem>
+<listitem>
+<simpara>When both commands resolve properly it will be safe to preserve the state of the router using VMware’s snapshot function or similar application.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+<simpara>The final configuration of client1 is listed in the appendix. However, it is recommended that users follow along with the guide, making changes as necessary. Jumping ahead to the final configuration may result in failure when testing service functionality in the next few sections.</simpara>
+</section>
+<section xml:id="_step_three_configure_dc1">
+<title><emphasis role="strong">Step Three</emphasis> - Configure DC1</title>
+<simpara>The DC1 machine will act as a DNS server and a DHCP server. Configuring DC1 will be include:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Installing an operating system - Fedora Server 27.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure TCP/IP properties.</simpara>
+</listitem>
+<listitem>
+<simpara>Install and Configure DNS.</simpara>
+</listitem>
+<listitem>
+<simpara>Re-configure TCP/IP properties to account for new DNS server.</simpara>
+</listitem>
+<listitem>
+<simpara>Install and Configure DHCP.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure DHCP and DNS settings on Client1.</simpara>
+</listitem>
+<listitem>
+<simpara>Snapshot the Configuration.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_the_operating_system">
+<title>Install the Operating System</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start the installation using the installer disk or the .iso file and follow the installation prompts.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>When using VMware to install the operating system, many of the option will be prefilled.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>VMware will prompt for a username and password - remember these credentials!</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Log on using the credentials created during the installation process</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip">
+<title>Configure TCP/IP</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Check that the Network Manager is running using the command <literal>systemctl status NetworkManager.service</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>If the Network Manager is running the result will be <literal>Active: active (running)</literal> in green.</simpara>
+</listitem>
+<listitem>
+<simpara>If the Network Manager is not running, enter the command <literal>systemctl start NetworkManager.service</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Install nmtui, if not already installed.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo yum install NetworkManager-tui -y</literal>.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>You may have to temporarily connect directly to the internet to do this.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>sudo nmtui</literal> to enter the Network Manager graphical user interface.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Use the arrows keys to select "Edit Connection" for the Internet-facing interface and then hit Enter.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to set "IPv4 CONFIGURATION" and set it to "Manual"</simpara>
+</listitem>
+<listitem>
+<simpara>Set "Addresses" with an IP address in your configured subnet that does not conflict with any previously assigned. Add the subnet in slash notation on the end, or the configuration will fail.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Example: <literal>192.168.240.5/24</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Set "DNS Server" to the address "8.8.8.8"</simpara>
+</listitem>
+<listitem>
+<simpara>Set "Gateway" to the address of the router</simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that "Automatically connect" has an "[x]" in the brackets next to it.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "OK" and return to the main menu of the editor.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "Quit" and press Enter to exit the editor</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Edit the hostname using the command <literal>sudo hostnamectl set-hostname dc1.business.com</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that the connection works with the commands <literal>ping 8.8.8.8</literal> and <literal>ping www.google.com</literal>. Use <literal>ctrl + c</literal> to stop the command execution. Both should produce	 results if the network is properly configured.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You may have to restart the network to do this.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>This can be done by entering the command <literal>sudo systemctl restart Network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+<simpara>These are temporary settings that will ensure internet connectivity while downloading the required packages for DNS and DHCP. The settings will be reconfigured after the appropriate services have been set up.</simpara>
+</section>
+<section xml:id="_installconfigure_dns">
+<title>Install/Configure DNS</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Before we do anything, open the DNS port of 53/tcp</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter command <literal>sudo firewall-cmd --open-port=53/tcp --permanent</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter command <literal>sudo firewall-cmd --reload</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Install bind by typing the command <literal>sudo yum install bind bind-utils -y</literal> and hitting enter.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure etc/named.conf (this is the configuration file for BIND)</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Under <literal>options {</literal></simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Edit <literal>{ listen-on port 53</literal> to add in the IP address of the DNS server</simpara>
+<orderedlist numeration="upperalpha">
+<listitem>
+<simpara>It should look like <literal>listen-on port 53 { 127.0.0.1; your-dc1-address; };</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Comment out <literal>listen-on-v6 port 53 { ::1; };</literal> by adding a <literal>#</literal> in front</simpara>
+<orderedlist numeration="upperalpha">
+<listitem>
+<simpara>It should look like this <literal>#listen-on-v6 port 53 { ::1; };</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Edit <literal>allow-query</literal> to add in the subnet</simpara>
+<orderedlist numeration="upperalpha">
+<listitem>
+<simpara>It should look like <literal>allow-query { localhost; 192.168.240.0/24; };</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Add in <literal>forwarders</literal> with IP addresses of <literal>8.8.8.8</literal> and <literal>8.8.4.4</literal></simpara>
+<orderedlist numeration="upperalpha">
+<listitem>
+<simpara>It should look like <literal>forwarders { 8.8.8.8; 8.8.4.4; };</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>At the end of the file add in <literal>include “/etc/named/named.conf.local”;</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Save this file by using <literal>ctrl + x</literal> and entering <literal>y</literal> at the prompt.</simpara>
+</listitem>
+<listitem>
+<simpara>Create the <literal>named.conf.local</literal> file and add:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="namedconflocal.jpg"/>
+</imageobject>
+<textobject><phrase>the base configuration for named BIND dns</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Make sure the second one matches your subnet‘s addressing scheme</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Create the two files referenced in named.conf.local</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter commands:</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara><literal>sudo touch /var/named/db.business.com</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo touch /var/named/db.240.168.192</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Make a copy of a default forwarder <literal>named.</literal> file to use as a template by running the command <literal>sudo cp /var/named/named.empty &lt;file path here&gt;</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Next edit this file by running the command <literal>sudo nano /etc/named/db.business.com</literal>. This will bring you into the Nano editor where you will want to make changes to what is already there.</simpara>
+</listitem>
+<listitem>
+<simpara>Change the <literal>$TTL</literal> value of <literal>3h</literal> to <literal>604800</literal> then replace <literal>rname.invalid.</literal> with <literal>dc1.business.com. YourUser.business.com.</literal> Remove the <literal>@</literal> symbol before this value.</simpara>
+</listitem>
+<listitem>
+<simpara>Next change the values for serial to the days date with a serial number at the end (ie. 3/3/17 = 20170303+ serial #). The serial number can be any value. I used 02.</simpara>
+</listitem>
+<listitem>
+<simpara>Now changes the values for refresh, retry, expire, and minimum to <literal>604800</literal>, <literal>86400</literal>, <literal>2419200</literal>, and <literal>604800</literal> respectively</simpara>
+</listitem>
+<listitem>
+<simpara>Add in <literal>@</literal> followed by a tab then <literal>IN</literal> with another tab for the <literal>NS, A, and AAAA</literal> lines also change the <literal>@</literal> in the <literal>NS</literal> line to <literal>dc1.business.com.</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Add the A record addresses as shown below:</simpara>
+<screen>    firewall	IN	A	192.168.240.1
+
+    dc1	        IN	A	192.168.240.5
+
+    app1	    IN	A	192.168.240.10
+
+    client1	    IN	A	192.168.240.15</screen>
+</listitem>
+<listitem>
+<simpara>Add in CNAME Record addresses as shown below:</simpara>
+<screen>    server1 IN CNAME dc1.business.com.
+    server2 IN CNAME app1.business.com.</screen>
+</listitem>
+<listitem>
+<simpara>It should look like the file below:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dc1bus.jpg"/>
+</imageobject>
+<textobject><phrase>dc1.business zone config</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Press <literal>ctrl + x</literal> to exit the editor and then hit <literal>y</literal> to save the file</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Repeat the steps and create this file:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dc1240.jpg"/>
+</imageobject>
+<textobject><phrase>dc1 reverse records config</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Now it is time to start the DNS server</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo systemctl enable named</literal> to enable the DNS server.</simpara>
+</listitem>
+<listitem>
+<simpara>Then enter the command <literal>sudo systemctl start named</literal> to start the DNS server</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_re_configure_tcpip">
+<title>Re-configure TCP/IP</title>
+<simpara>After DNS has been configured, the TCP/IP settings of DC1 can be reconfigured to point to itself as the DNS server rather than the router.</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install nmtui, if not already installed.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo yum install NetworkManager-tui -y</literal>.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>You may have to temporarily connect directly to the internet to do this.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>sudo nmtui</literal> to enter the Network Manager interface.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Use the arrow keys to select "Edit Connection" for the interface and press the enter key</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "IPv4 Configuration" and hit Enter</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Under "DNS servers" replace the router address with <literal>127.0.0.1</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>USe the arrow keys to select "&lt;OK&gt;" and press Enter</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "&lt;Back&gt;" and press Enter to return to the main menu of the editor</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "quit" and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Restart the network by running the command <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that the connection works with the commands <literal>ping 8.8.8.8</literal> and <literal>ping www.google.com</literal>. Both should produce results if the network is properly configured and	 can be exited with <literal>ctrl + c</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_and_configure_dhcp">
+<title>Install and Configure DHCP</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install DHCP using the command <literal>sudo yum install dhcp -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enter the configuration file by entering the command <literal>sudo nano /etc/dhcp/dhcpd.conf</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the following configuration lines:</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Please note: ensure that you are using addresses that match your network configuration.</simpara>
+</listitem>
+<listitem>
+<simpara>Please note II:  the hardware ethernet when making reservations for client1 is the MAC address of client1. This can be found by running the <literal>ifconfig</literal> command on client1</simpara>
+<screen># Create new domain
+ option domain-name “business.com”;
+
+# Specify DNS server IP
+ option domain-name-servers 192.168.240.5;
+
+# Specify default lease time
+default-lease-time 600;
+
+# Specify max lease time
+max-lease-time 7200;
+
+# Specify router
+option routers 192.168.240.1;
+
+# Specify broadcast address
+option broadcast-address 192.168.240.255;
+
+# Declare this as authoritative
+authoritative;
+
+# Specify network range
+subnet 192.168.240.0 netmask 255.255.255.0 {
+range 192.168.240.15 192.168.240.254;
+}
+
+# Make IP Address reservation for client1
+host client1 {
+option host-name “client1.business.com”;
+hardware Ethernet 00:50:56:AF:9C:E3; (Your client1 mac address)
+Fixed-address 192.168.240.15;
+}</screen>
+<simpara>An example is shown below:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dhcpconf.jpg"/>
+</imageobject>
+<textobject><phrase>DHCP configuration</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Press <literal>ctrl + x</literal> to exit the Editor and then enter y to save the file.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Start the DHCP server using the following commands:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo systemctl enable dhcpd</literal> to enable the DHCP server</simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl start dhcpd</literal> to start the DHCP server
+At this point the DHCP server can be tested using the Client1 machine to ensure that everything functions properly.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_dhcp_and_dns_settings_on_client1">
+<title>Configure DHCP and DNS settings on Client1</title>
+<simpara>The network settings will be configured through the graphical user interface on the client machine set up in Step 2.</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Select the drop down menu in the top right corner by clicking on the small arrow next to the power symbol.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Wired Connection” and click on “Wired Settings”</simpara>
+</listitem>
+<listitem>
+<simpara>This will open a new dialogue box. Click on the small box with a gear under the “Wired” settings.</simpara>
+</listitem>
+<listitem>
+<simpara>This opens a new dialogue box. Select “Ipv4” along the top bar.</simpara>
+</listitem>
+<listitem>
+<simpara>Next to “IPv4” options select “DHCP” and enter the address of AD1</simpara>
+</listitem>
+<listitem>
+<simpara>Set DNS to the address of AD1.</simpara>
+</listitem>
+<listitem>
+<simpara>Select “Apply” in the top right corner to apply the settings</simpara>
+</listitem>
+<listitem>
+<simpara>Back on the Network Settings dialog box, click on the “On” button to turn the connection off. It should turn from blue to grey. Select once again to turn the settings back on. This ensures the settings are fully applied.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>If the network is configured properly and the router is functioning, the client will now be able to function.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Open a terminal by selecting “Activities” in the top left corner and typing <literal>cmd</literal> into the search box. When “terminal” appears select it. This will open a command prompt.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>ping 8.8.8.8</literal> at the command line to check network connectivity. This should generate continuous responses.  Use <literal>ctrl + c</literal> to exit.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>ping www.google.com</literal> to test hostname resolution. This	 should generate continuous positive responses, and use <literal>ctrl + c</literal> to exit.</simpara>
+</listitem>
+<listitem>
+<simpara>When both commands resolve properly it will be safe to preserve the state of the router using VMware’s snapshot function or similar application.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_snapshot_the_configuration">
+<title>Snapshot the Configuration</title>
+<simpara>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</simpara>
+</section>
+<section xml:id="_step_four_configure_app1">
+<title><emphasis role="strong">Step Four</emphasis> - Configure APP1</title>
+<simpara>APP1 will provide a web server and a Samba Share. Configuration steps for APP1 include:</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install the operating system - Fedora Server 27.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure TCP/IP Properties</simpara>
+</listitem>
+<listitem>
+<simpara>Configure the web server</simpara>
+</listitem>
+<listitem>
+<simpara>Configure the Samba Share</simpara>
+</listitem>
+<listitem>
+<simpara>Test Access from client1</simpara>
+</listitem>
+<listitem>
+<simpara>Snapshot the Configuration</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_the_operating_system_2">
+<title>Install the Operating System</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start the installation using the installer disk or the .iso file and follow the installation prompts.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>When using VMware to install the operating system, many of the option will be prefilled.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>VMware will prompt for a username and password - remember these credentials!</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Log on using the credentials created during the installation process</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_properties_2">
+<title>Configure TCP/IP Properties</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Check that the Network Manager is running using the command <literal>systemctl status NetworkManager.service</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>If the Network Manager is running the result will be <literal>Active: active (running)</literal> in green.</simpara>
+</listitem>
+<listitem>
+<simpara>If the Network Manager is not running, enter the command <literal>systemctl start NetworkManager.service</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Install nmtui, if not already installed.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo yum install NetworkManager-tui -y</literal>.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>You may have to temporarily connect directly to the internet to do this.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>sudo nmtui</literal> to enter the Network Manager graphical user interface.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Use the arrows keys to select "Edit Connection" for the Internet-facing interface and then hit Enter.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to set "IPv4 CONFIGURATION" and set it to "Manual"</simpara>
+</listitem>
+<listitem>
+<simpara>Set "Addresses" with an IP address in your configured subnet that does not conflict with any previously assigned. Add the subnet in slash notation on the end, or the configuration will fail.</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Example: <literal>192.168.240.10/24</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Set "DNS Server" to the address of the server AD1</simpara>
+</listitem>
+<listitem>
+<simpara>Set "Gateway" to the address of the router</simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that "Automatically Connect" has an "[x]" in the brackets next to it.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select "OK" and return to the main menu of the editor.
+..Use the arrow keys to select "Quit" and press Enter to exit the editor</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Edit the hostname using the command <literal>sudo hostnamectl set-hostname app1.bussiness.com</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that the connection works with the commands <literal>ping 8.8.8.8</literal> and <literal>ping www.google.com</literal>. Both should produce results if the network is properly configured.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_the_web_server">
+<title>Configure the web server</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Run the command <literal>sudo yum install httpd</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter <literal>y</literal> when prompted to confirm install</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Run the command <literal>sudo systemctl enable httpd</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Run the command <literal>sudo systemctl start httpd</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Ensure that HTTP traffic will be allowed by allowing it through the firewall</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter the command <literal>sudo firewall-cmd –permanent –add-service=http</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>sudo firewall-cmd –reload</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_the_samba_share">
+<title>Configure the samba share</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start by installing Samba by using the following command <literal>sudo yum install samba samba-client samba-common</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter <literal>y</literal> when prompted to confirm install.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Create a backup of the default configuration by running the following command <literal>sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create a new configuration file by entering the command <literal>sudo nano /etc/samba/smb.conf</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Create an open (not secured share) by adding the following into the file, which will create definitions for a share that is accessible by all users on the LAN located at <literal>/samba/allaccess</literal>:</simpara>
+<screen>[global]
+workgroup = WORKGROUP
+server string = Samba Server %v
+netbios name = app1
+security = user
+map to guest = bad user
+dns proxy = no
+hosts allow = 192.168.240.0/24
+protocol = SMB3
+
+[allaccess]
+path = /samba/allaccess
+browsable = yes
+writable = yes
+guest ok = yes
+read only = no</screen>
+</listitem>
+<listitem>
+<simpara>Press <literal>ctrl + x</literal> to exit the Editor and then hit <literal>y</literal> to save the file.</simpara>
+</listitem>
+<listitem>
+<simpara>The file should look like the one shown below:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="sambaconf.jpg"/>
+</imageobject>
+<textobject><phrase>samba file share configuration</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Now create the share directory by running the command <literal>sudo mkdir -p /samba/allaccess</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Add SMB permissions to a user in your system.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter command <literal>sudo Smbpassword -a &lt;user&gt;</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>You will also need to allow Samba traffic through the firewall, use the following commands to do so:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo firewall-cmd –permanent –add-service=samba</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo firewall-cmd –reload</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Now you need to edit the permissions of the share so guest users can access it, start by moving to the <literal>/samba</literal> directory by using the <literal>cd /samba</literal> command</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Next run the command <literal>sudo chmod -R 0755 allaccess/</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Then run <literal>sudo chown -R nobody:nobody allaccess/</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Now you need to configure SELinux to allow access to the Samba directory, use the following command to do so <literal>sudo chcon -t samba_share_t allaccess/</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Start and enable Samba services using the following commands:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><literal>sudo systemctl enable smb</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl enable nmb</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl start smb</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo systemctl start nmb</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+<simpara>This finishes the creation of the Samba share that is accessible to all users on the LAN.</simpara>
+</section>
+<section xml:id="_test_web_server_access">
+<title>Test web server access</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Log on to the client machine and open the mozilla web browser.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the IP address of the app1 machine to the address bar.</simpara>
+</listitem>
+<listitem>
+<simpara>This should present the default Apache homepage as shown below.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="httptest.jpg"/>
+</imageobject>
+<textobject><phrase>example of http fedora test page</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_test_samba_share_access">
+<title>Test samba share access</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install on client1 <literal>sudo yum install samba-client samba-common cifs-utils</literal> using the command line.</simpara>
+</listitem>
+<listitem>
+<simpara>Have to let through the firewall: <literal>sudo firewall-cmd --permanent --dd-service=samba</literal> and <literal>firewall-cmd --reload</literal></simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="sambatest.jpg"/>
+</imageobject>
+<textobject><phrase>what the samba test results should look like</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_snapshot_the_configuration_2">
+<title>Snapshot the Configuration</title>
+<simpara>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</simpara>
+</section>
+</section>
+<section xml:id="_additional_resources">
+<title>Additional Resources</title>
+<section xml:id="_how_to_give_a_user_sudo_privileges">
+<title>How to give a user sudo privileges</title>
+<simpara>Most of the steps taken in this base lab require using the command <literal>sudo</literal>, which can only be executed by a user with those privileges.</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Log on to a root account.</simpara>
+</listitem>
+<listitem>
+<simpara>Execute the command <literal>usermod username -a -G wheel</literal> where <literal>username</literal> is the name of the user you’d like to elevate the privileges of.</simpara>
+</listitem>
+<listitem>
+<simpara>Log out of the root account using the command <literal>exit</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Log in to the account that was granted sudo privileges.</simpara>
+</listitem>
+<listitem>
+<simpara>Test access using the command <literal>sudo -v</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>This will prompt a message and ask for the user’s password if the process worked. Otherwise it will display an error message.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_final_client_configuration">
+<title>Final Client Configuration</title>
+<simpara>Included in this section is information regarding the final network configuration of the client workstation. These settings can be accessed by logging in to the client workstation and selecting drop down menu in the top right corner and then selecting “Wired Settings” under the Wired Connected section. This will open a new dialogue box. To access settings select the box with the gear icon under the Wired section.</simpara>
+<simpara>Below is an example of what the “Details” tab. The default route is the address of the router, and the DNS points to the address of DC1</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="wireddetails.jpg"/>
+</imageobject>
+<textobject><phrase>client1 wired config details page</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>The IPv4 tab settings are shown below. The address is assigned automatically by the DHCP server and the DNS settings show on the above screen are assigned here.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="wiredipv4.jpg"/>
+</imageobject>
+<textobject><phrase>client1 wired config ipv4 page</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara>These settings will enable the client workstation to be fully functional in the context of this network environment.</simpara>
+<formalpara>
+<title>Contributors</title>
+<para>Evan Callaghan
+Michael Pare</para>
+</formalpara>
+</section>
+</section>
+</article>
