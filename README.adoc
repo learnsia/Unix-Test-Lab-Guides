@@ -25,3 +25,12 @@ Please contact me:  dunston@champlain.edu
 ** CentOS 7 Add-on Labs
 *** Lab 1
 *** Lab 2
+
+* Fedora 7 
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/Fedora7/Fedora7Base.adoc[Read Online]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/Fedora7/Fedora7Base.pdf[PDF]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/Fedora7/Fedora7Base.xml[Docbook]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/Fedora7/Fedora7Base.epub[ePub]
+** Fedora 7 Add-on Labs
+*** Lab 1
+*** Lab 2
