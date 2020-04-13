@@ -22,3 +22,6 @@ Please contact me:  dunston@champlain.edu
 ** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.pdf[PDF]
 ** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.xml[Docbook]
 ** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.epub[ePub]
+** CentOS 7 Add-on Labs
+*** Lab 1
+*** Lab 2
