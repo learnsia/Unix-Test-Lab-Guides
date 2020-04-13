@@ -1,0 +1,531 @@
+:icons: font
+:toc: left
+
+= Base Lab Configuration For CentOS 7
+
+Michael Pare <michael.pare@mymail.champlain.edu>
+version 0.1, 2020-04-12
+
+== Introduction
+
+*Terminology*
+
+A Records. + 
+AAAA Records. + 
+Active Directory (AD). + 
+CNAME Records. + 
+Domain Controller (DC). + 
+Domain Name System (DNS). + 
+Dynamic Host Configuration Protocol (DHCP). + 
+Firewalld. + 
+Google Public DNS. + 
+GNU’s Not Linux (GNU). + 
+GNU nano. + 
+IP Forwarding. + 
+iptables. + 
+Network Address Translation (NAT). + 
+Network Interface Controller (NIC). + 
+Network Manager (nmtui). + 
+NS Records. + 
+PTR Records. + 
+Samba. + 
+Xfce Desktop Environment. + 
+
+=== Disclaimer
+
+This website contains work created for informational purposes. Information may be out of date or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
+ 
+The entire risk arising out of the use of these guides remains with you. IN NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY, OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides
+
+== Network Design
+
+image::networkdiagram.jpg[network diagram, align="center"]
+
+icon:fire[] *_Firewall_*
+
+IP Address: 192.168.100.1/24
+
+Hostname: firewall.college.com
+
+	The Firewall’s purpose is to handle traffic between the Intranet and Internet. This means that it will act as a router directing traffic. There are two interfaces on Firewall, one is the external/Internet-facing called ens192 and the other is the internal/Intranet-facing called ens224.
+
+icon:server[] *_DC1_*
+ 
+IP Address: 192.168.100.2
+
+Gateway: 192.168.100.1
+
+DNS Server: 127.0.0.1
+
+Hostname: dc1.college.com
+
+	This will be configured as the Intranet’s Domain Name System (DNS) and the Dynamic Host Configuration Protocol (DHCP) server. 
+	
+icon:database[] *_App1_*
+
+IP Address: 192.168.100.3
+
+Gateway: 192.168.100.1
+
+DNS Server: 192.168.100.2
+
+Hostname: app1.college.com
+
+	This is an internal web and application server. 
+
+icon:desktop[] *_Client1_*
+IP Address: Dynamic
+
+DNS Server: 192.168.100.2
+
+Hostname: client1.college.com
+
+	Client1 is a workstation that has the ability to switch between the Intranet and Internet subnet.
+
+
+== I. Configure Firewall
+
+[.lead]
+The below instructions detail the installation and setup of Firewall. The last section, Troubleshooting, has some information on common problems that people come across.
+	
+=== Install the Operating System on Firewall
+
+. Start CentOS7 Firewall.
+. Hit Enter to select “Install CentOS 7.”
+. On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.
+. On “Installation Summary,” under “System,” select “Installation Destination.”
+.. Check and click that the VMware Virtual disk has been selected. It will highlight in blue.	
+.. Click “Done” in the top left-hand corner to move back to the “Installation Summary” page. 
+. To continue, click “Begin Installation.” 
+. In “Configuration,” set the appropriate Root Password.
+.. Recommended Root Password: icon:key[] Ch@mplain!18
+. On the same “Configuration” screen, Create a User.
+.. Recommended Full Name: Champlain
+.. Recommended User Name: icon:user[] champlain
+.. Check box “Make this user administrator”
+.. Recommended Password: icon:key[] S3cur1ty!18
+. Once installation is complete, click “Reboot.”
+. Logon to the credentials you just created.
+.. icon:user[] User: root 
+*** icon:key[] Password: Ch@mplain!18
+.. icon:user[] User: champlain 
+*** icon:key[] Password: S3cur1ty!18
+
+=== Configure TCP/IP
+. Ensure that Network Manager is running. Type `systemctl status NetworkManager`.
+.. You should see “Active: active (running)” in green if it is running.
+.. If it is not running, enter the command sudo `systemctl start NetworkManager.service`.
+.. If the service fails to launch, check the logs by entering the command `sudo systemctl status NetworkManager.service -l`.
+. This is for the Internet-facing interface. Enter the command `nmtui` to enter the Network Manager.
+.. Select “Edit a connection.”
+.. Select the Internet-facing interface, ens192, and use the arrow keys to select “<Edit…>”
+.. Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “<Automatic>”
+.. At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+. Now, repeat for Intranet-facing interface. 
+.. Select “Edit a connection.”
+.. Select the Intranet-facing interface, ens224, and use the arrow keys to select “<Edit…>”
+.. Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “<Manual>”
+.. Under “Addresses” add in “192.168.100.1/24”
+.. At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+. Change the hostname. To change the hostname to firewall.college.com use the following command: `sudo hostnamectl set-hostname firewall.college.com`.
+. Restart the network using `sudo systemctl restart network`.
+
+=== Install and Use of Nano
+
+. Run the command sudo `yum install nano -y`.
+
+=== Configure NAT Rules
+	This will allow the system to act as a router and to allow traffic from the internal network out to the external network.
+	
+. Enable IP forwarding by entering the command `sudo echo “net.ipv4.ip_forward = 1” >> /etc/sysctl.d/ip_forward.conf`.
+.. You will need to be root to perform this task. 
+.. Switch back to champlain user afterwards using su champlain.
+. Add the external-facing NIC to Firewalld’s “public” zone by typing: `sudo firewall-cmd --zone=public --add-interface=ens192 --permanent`
+.. Where ens192 is the name of the external interface
+. Add the internal-facing NIC to Firewalld’s “internal” zone by typing: `sudo firewall-cmd --zone=internal --add-interface=ens224 --permanent`
+.. Where “ens224” is the name of the internal interface
+. Apply masquerading to the external Firewalld zone by typing: `sudo firewall-cmd --zone=public --add-masquerade --permanent`
+. Save those changes by typing: `sudo firewall-cmd --complete-reload`
+. Enable NAT by entering the command `sudo firewall-cmd --permanent --direct --passthrough ipv4 -t nat -l POSTROUTING -o ens224 -j MASQUERADE -s 192.168.100.0/24`.
+. Restart the firewall to save using `sudo firewall-cmd --reload`.
+. Configure NAT rules on iptables. Enter the following commands.
+	`sudo iptables -F`
+	`sudo iptables -P INPUT ACCEPT`
+	`sudo iptables -P OUTPUT ACCEPT`
+. Ensure NAT rules on iptables remains on boot. Add in the commands from earlier for NAT by entering the command `sudo nano /etc/rc.local`. This will open the file in Nano Editor.
+.. Add in the following at the end:
+
+		# NAT Rules
+		iptables -P INPUT ACCEPT
+		iptables -P OUTPUT ACCEPT
+
+image::natrules.jpg[Network Address Translation rules, align="center"]
+
+.. The above ensures that the NAT rules are still in place on reboot.
+.. Press Ctrl+X to exit the Nano Editor then hit Y to save the file and hit Enter to save it with the same name.
+
+
+icon:star[role="yellow"] Congratulations, Firewall is now configured. 
+
+
+== II. Configure DC1
+
+[.lead]
+The below instructions detail the installation and setup of DC1. The last section, Troubleshooting, has some information on common problems that people come across.
+	
+=== Install the Operating System on DC1
+
+. Start CentOS7 DC1.
+. Hit Enter to select “Install CentOS 7.”
+. On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.
+. On “Installation Summary,” under “System,” select “Installation Destination.”
+.. Check and click that the VMware Virtual disk has been selected. It will highlight in blue.	
+.. Click “Done” in the top left-hand corner to move back to the “Installation Summary” page. 
+. To continue, click “Begin Installation.” 
+. In “Configuration,” set the appropriate Root Password.
+.. Recommended Root Password: Ch@mplain!18
+. On the same “Configuration” screen, Create a User.
+.. Recommended Full Name: Champlain
+.. Recommended User Name: champlain
+.. Check box “Make this user administrator”
+.. Recommended Password: S3cur1ty!18
+. Once installation is complete, click “Reboot.”
+. Logon to the credentials you just created.
+.. icon:user[] User: root 
+*** icon:key[] Password: Ch@mplain!18
+.. icon:user[] User: champlain 
+*** icon:key[] Password: S3cur1ty!18
+
+
+=== Configure TCP/IP on DC1
+
+
+. Ensure that Network Manager is running. Type `systemctl status NetworkManager`.
+.. You should see “Active: active (running)” in green if it is running.
+.. If it is not running, enter the command `sudo systemctl start NetworkManager.service`.
+.. If the service fails to launch, check the logs by entering the command `sudo systemctl status NetworkManager.service -l`.
+. Enter the command nmtui to enter the Network Manager.
+.. Select “Edit a connection.”
+.. Select ens192, and use the arrow keys to select “<Edit…>”
+.. Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “<Manual>”
+.. Under “Addresses” add in 192.168.100.2/24.
+.. Under “Gateway” add in the address of the router: 192.168.100.1.
+.. Under “DNS servers” add in the address of Google: 8.8.8.8.
+.. This is a temporary setting to ensure Internet connectivity while downloading the required packages to configure DNS and DHCP.
+.. At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+. Change the hostname. To change the hostname to dc1.college.com use the following command: `sudo hostnamectl set-hostname dc1.college.com`.
+. Restart the network using `sudo systemctl restart network`.
+
+=== Install and Use of Nano
+
+. Run the command `sudo yum install nano -y`.
+
+=== Configure DC1 as DNS Server
+
+. Install DNS using the command `sudo yum install bind bind-utils -y`.
+. Configure bind by editing named.conf. Use the command `sudo nano /etc/named.conf` to do so. Make the following edits.
+.. Edit this line to look like by adding in the IP address of the DNS server:
++
+image::listenport53.jpg[rule to listen on port 53 which is dns port, align="center"]
+.. Comment out “listen-on-v6 port 53 { ::1; };” by adding a pound (#) sign:
++
+image::listenport53v6.jpg[rule to listen on port 53 for ipv6, align="center"]
++
+.. Edit “allow-query” to add in the subnet to look like:
++
+image::allowquerysubnet.jpg[rule to give the subnet permission to query, align="center"]
++
+.. Add in a section for “forwarders”:
++
+image::dnsforwardersrule.jpg[rule to forward requests to DNS ips, align="center"]
++
+.. At the end add in “include “/etc/named/named.conf.local”;”
++
+image::namedconfinclude.jpg[rule to include the file named.conf.local for dns, align="center"]
++
+. Create and edit named.conf.local. Edit using: `sudo nano etc/named/named.conf.local`. Fill in this new, blank file with the following information.
++
+image::namedconflocal.jpg[the local named dns configuration, align="center"]
++
+. Now, you will need to create the two files referenced in “etc/named/named.conf.local” + 
+First, create the forwarder configuration.
+.. Make the zones directory in /etc/named, `sudo mkdir /etc/named/zones`.
+.. Create a file using `sudo nano /etc/named/zones/db.college.com`. In the end, it should like like the below screenshot.
++
+image::dbcollege.jpg[college dns zone, align="center"]
++
+. Next, setup the reverse zone configuration file.
+.. Create a file using sudo nano /etc/named/zones/db.100.168.192. In the end, it should like the below screenshot.
++
+image::dbreverse.jpg[college reverse address dns zone, align="center"]
++
+. Start the DNS server.
+.. Enable the DNS server: `sudo systemctl enable named`
+.. Start the DNS server: sudo systemctl start named
+. Allow port 53 for DNS queries.
+.. Allow port 53/tcp and 53/udp through on the firewall: `sudo firewall-cmd --permanent --add-port={53/tcp,53/udp}`
+.. Reload the firewall: `sudo firewall-cmd --reload`
+
+=== Reconfigure TCP/IP on DC1
+
+. Enter the command `nmtui` to enter the Network Manager.
+.. Select “Edit a connection.”
+.. Select ens192, and use the arrow keys to select “<Edit…>”
+.. Under “DNS servers” remove 8.8.8.8 and add in the address: 127.0.0.1
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+. Restart the network: `sudo systemctl restart network`
+
+=== Configure DHCP on DC1
+
+
+. Install DHCP: `sudo yum install dhcp -y`
+. Open the DHCP configuration file: `sudo nano /etc/dhcp/dhcpd.conf`
+. Edit the configuration file to look like the following:
+.. Make sure to change the hardware ethernet address to your Client1’s address .
++
+image::dhcpconf.jpg[dhcp configuration file, align="center"]
++
+image::clientreservation.jpg[rule to reserve an ip for client1, align="center"]
++
+. Start the DHCP server: `sudo systemctl start dhcpd`
+. Enable the DHCP server: `sudo systemctl enable dhcpd`
+
+icon:star[role="yellow"] Congratulations, DC1 is now configured.
+
+
+== III. Configure App1
+
+[.lead]
+The below instructions detail the installation and setup of App1. The last section, Troubleshooting, has some information on common problems that people come across.
+	
+=== Install the Operating System on App1 
+
+. Start CentOS7 App1.
+. Hit Enter to select “Install CentOS 7.”
+. On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.
+. On “Installation Summary,” under “System,” select “Installation Destination.”
+.. Check and click that the VMware Virtual disk has been selected. It will highlight in blue.	
+.. Click “Done” in the top left-hand corner to move back to the “Installation Summary” page. 
+. To continue, click “Begin Installation.” 
+. In “Configuration,” set the appropriate Root Password.
+.. Recommended Root Password: Ch@mplain!18
+. On the same “Configuration” screen, Create a User.
+.. Recommended Full Name: Champlain
+.. Recommended User Name: champlain
+.. Check box “Make this user administrator”
+.. Recommended icon:key[] Password: S3cur1ty!18
+. Once installation is complete, click “Reboot.”
+. Logon to the credentials you just created.
+.. icon:user[] User: root 
+*** icon:key[] Password: Ch@mplain!18
+.. icon:user[] User: champlain 
+*** icon:key[] Password: S3cur1ty!18
+
+=== Configure TCP/IP on App1
+
+. Ensure that Network Manager is running. Type `systemctl status NetworkManager`.
+.. You should see “Active: active (running)” in green if it is running.
+.. If it is not running, enter the command `sudo systemctl start NetworkManager.service`.
+.. If the service fails to launch, check the logs by entering the command `sudo systemctl status NetworkManager.service -l`.
+. Enter the command `nmtui` to enter the Network Manager.
+.. Select “Edit a connection.”
+.. Select ens192, and use the arrow keys to select “<Edit…>”
+.. Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “<Manual>”
+.. Under “Addresses” add in 192.168.100.3/24.
+.. Under “Gateway” add in the address of the router: 192.168.100.1.
+.. Under “DNS servers” add in the address of the DNS Server: 192.168.100.2
+.. At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+.. Change the hostname. To change the hostname to app1.college.com use the following command: `sudo hostnamectl set-hostname app1.college.com`.
+. Restart the network using `sudo systemctl restart network`.
+
+=== Install and Use of Nano
+
+. Run the command `sudo yum install nano -y`.
+
+=== Install Web Server Role on App1
+
+. Install Apache: `sudo yum install httpd -y`
+. Enable Apache: `sudo systemctl enable httpd`
+. Start Apache: `sudo systemctl start httpd`
+. Allow Apache through the firewall: `sudo firewall-cmd --permanent --add-service=http`
+. Reload the firewall: `sudo firewall-cmd --reload`
+
+=== Configure File Sharing on App1
+
+. Install Samba: `sudo yum install samba samba-client samba-common -y`
+. Create a backup of the default Samba configuration: `sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak`
+. Create a new Samba configuration file: `sudo nano /etc/samba/smb.conf`
+. Edit it to look like the following:
++
+image::sambaconf.jpg[samba configuration file, align="center"]
++
+. Create the actual share: `sudo mkdir -p /samba/allaccess`
+. Allow Samba through the firewall: `sudo firewall-cmd --permanent --add-service=samba`
+. Reload the firewall: `sudo firewall-cmd --reload`
+. Move into Samba’s directory: `cd /samba`
+. Change the permissions: `sudo chmod -R 0755 allaccess/`
+. Change the permissions: `sudo chown -R nobody:nobody allaccess/`
+. Configure SELinux to allow access to the Samba directory: `sudo chcon -t samba_share_t allaccess/`
+. Enable SMB and NMB: `sudo systemctl enable smb` and `sudo systemctl enable nmb`
+. Start SMB and NMB: `sudo systemctl start smb` and `sudo systemctl start nmb`
+. This finishes the creation of the Samba share that is accessible to all users on the LAN.
+. Set the specific SELinux Boolean values that you will need to install another package containing some utilities: `sudo yum install policycoreutils-python -y`
+. Create a group for users who will be allowed access to the share: `sudo groupadd samby`
+. Create some users: `sudo useradd user1` and `sudo useradd user2`
+. Add new users to the new group: `sudo usermod -a -G samby user1` and `sudo usermod -a -G samby user2`
+. Create passwords for the new users: `sudo smbpasswd -a user1` and `sudo smbpasswd -a user2`
+. May be beneficial to use the same icon:key[] password: Pr1vacy!
+. Make the directory that will be used for the share: `cd /` and `sudo mkdir /samby`
+. Modify the permissions of the /samby share: `sudo chmod 0770 /samby` and `sudo chgrp samby /samby`
+. Edit the SELinux settings for the /Samby share:
+**** `sudo setsebool -P samba_export_all_ro=1 samba_export_all_rw=1` 
+**** `getsebool -a | grep samba_export` 
+**** `sudo semanage fcontext -at samba_share_t ‘/samby(/.*)?’`
+**** `sudo restorecon /samby`
+. Edit the smb.conf file: `sudo nano /etc/samba/smb.conf`
+. Keep everything in there and add the following section to the smb.conf; that section should look like:
+. Restart the SMB services: sudo systemctl restart nmb and sudo systemctl restart smb
+
+icon:star[role="yellow"] Congratulations, App1 is now configured.
+
+== IV. Configure Client1
+
+[.lead]
+The below instructions detail the installation and setup of the Client. The last section, Troubleshooting, has some information on common problems that people come across.
+
+=== Install the Operating System on Client1
+
+. Start CentOS7 Client1.
+. Hit Enter to select “Install CentOS 7.”
+. On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.
+. On “Installation Summary,” under “System,” select “Installation Destination.”
+.. Check and click that the VMware Virtual disk has been selected. It will highlight in blue.	
+.. Click “Done” in the top left-hand corner to move back to the “Installation Summary” page. 
+. To continue, click “Begin Installation.” 
+. In “Configuration,” set the appropriate Root Password.
+.. Recommended icon:user[] Root icon:key[] Password: Ch@mplain!18
+. On the same “Configuration” screen, Create a User.
+.. Recommended Full Name: Champlain
+.. Recommended icon:user[] User Name: champlain
+.. Check box “Make this user administrator”
+.. Recommended icon:key[] Password: S3cur1ty!18
+. Once installation is complete, click “Reboot.”
+. Logon to the credentials you just created.
+.. icon:user[] User: root
+*** icon:key[] Password: Ch@mplain!18
+.. icon:user[] User: champlain 
+*** icon:key[] Password: S3cur1ty!18
+
+=== Configure TCP/IP on Client1
+
+. Ensure that Network Manager is running. Type `systemctl status NetworkManager`.
+.. You should see “Active: active (running)” in green if it is running.
+.. If it is not running, enter the command `sudo systemctl start NetworkManager.service`.
+.. If the service fails to launch, check the logs by entering the command `sudo systemctl status NetworkManager.service -l`.
+. Enter the command `nmtui` to enter the Network Manager.
+.. Select “Edit a connection.”
+.. Select ens192, and use the arrow keys to select “<Edit…>”
+.. Under “DNS servers” add in the address of the DNS Server: 192.168.100.2
+.. At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.
+.. Use the arrow keys to select “<OK>” then “<Back>” and press Enter to go back to the main menu of Network Manager.
+.. Use the arrow keys to select “Quit” and press Enter to exit the editor. 
+. Change the hostname. To change the hostname to dc1.college.com use the following command: `sudo hostnamectl set-hostname client1.college.com`.
+. Restart the network using `sudo systemctl restart network`.
+
+=== Install GUI
+
+. Install epel-release: `sudo yum install epel-release -y`
+. Install groupinstall: `sudo yum groupinstall “Server with GUI” -y`
+.. This will be very time-intensive.
+. Install XFCE: `sudo yum groupinstall “XFCE” -y`
+. Tell the machine to boot to the GUI by default: `sudo systemctl set-default graphical.target`
+. Reboot the machine: `sudo reboot`
+. When the machine is rebooted, you may be taken to a screen that looks similar to the initial install screen.
+.. Click “License Information”
+.. Click the box next to “I accept the license agreement” and then click “Done”
+.. Click “Finish Configuration”, which will take you to the login screen of the GUI
+. Login.
+. Click the gear icon and select “Xfce Session”
+.. Enter your password and click “Sign In”
+.. When you first login, you will get a pop-up for the first start of the panel. Click “Use default config”
+
+=== Test Access to Resources on BUSNET Subnet
+
+. Test Access to the Web Server
+.. Under Applications, open Firefox Web Browser. 
+.. Enter the IP address of App1 (192.168.100.3) into the URL bar.
+.. If it is configured correctly, you should see the Apache test page, shown below.
++
+image::apachetest.jpg[apache test page example, align="center"]
++
+. Test Access to the Samba Share
+.. Under Applications, open a Terminal.
+.. Install Samba: `sudo yum install samba-client samba-common cifs-utils -y`
+.. Allow Samba through the firewall: `sudo firewall-cmd --permanent --add-service=samba`
+.. Reload the firewall: `sudo firewall-cmd --reload`
+.. Log into the SMB share: `smbclient //app1.college.com/samby -U user1`
++
+image::sambatest.jpg[samba test connection example, align="center"]
++
+.. Alternatively, you should be able to access the “WORKGROUP” share through “File Manager” and then either browse to “allaccess” share, which allows all users or sign into the “samby” share.
++
+image::workgroupshare.jpg[workgroup share exmaple, align="center"]
+
+
+icon:star[role="yellow"] Congratulations, Client1 is now configured.
+
+'''
+
+[.lead]
+icon:star[role="yellow"] Congratulations, the Base Lab Configuration is finished.
+
+== Troubleshooting
+
+=== Location to Logs & Configuration Files
+
+- General Logs: /var/log/messages
+- Samba Configuration: /etc/samba/smb.conf
+
+=== I. Firewall - Installing Nano - Cannot install nano
+
+. Check to see if you can ping out by using `ping 8.8.8.8`. If you can’t then this should be a solution.
+. Sometimes, when interfaces are edited in Network Manager, there will be a second ens192. Delete it.
+. First check Network Manager by using `nmtui` to see if the interfaces are set up properly.
+.. The external/Internet interface, ens192, should have:
+... IPv4 Configuration set to Automatic
+... Automatically connect check-boxed
+.. The internal/Intranet interface, ens224, should have:
+... IPv4 Configuration set to Manual
+... IP Address: 192.168.100.1/24
+... Automatically connect check-boxed
+. Restart your network by using `sudo systemctl restart network`.
+
+=== II. Firewall - systemctl restart network
+
+. It’s okay if network won’t restart. 
+
+=== III. Firewall - tcpdump
+
+. Install tcpdump on your Firewall: `sudo yum install tcpdump -y`
+. Switches:
+.. -D: Display available interfaces
+***** Ex: `sudo tcpdump -D`
+.. -i: Capture packets from a specific interface
+***** Ex: `sudo tcpdump -i ens224`
+.. -n: Capture IP address 
+***** Ex: `sudo tcpdump -n`
+.. port: Captures from a specific port
+***** Ex: `tcpdump -i ens224 port 22`
+.. src: Captures packets from source IP
+***** Ex: `tcpdump -i ens224 src 192.168.0.2`
+.. tcp: Captures only TCP packets
+***** Ex: `sudo tcpdump -i ens224 tcp`
