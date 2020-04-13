@@ -13,3 +13,9 @@ We hope that you find these guides helpful and that you'll provide us feedback o
 You don't have to convert the documents to Asciidoc, we can do that for you after testing the instructions that are sent.
 
 Please contact me:  dunston@champlain.edu
+
+== The Guides
+
+.Lab Guides
+* CentOS 7 Base Lab Guide
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.adoc[Read Online]
