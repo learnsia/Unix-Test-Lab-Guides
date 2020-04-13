@@ -19,3 +19,6 @@ Please contact me:  dunston@champlain.edu
 .Lab Guides
 * CentOS 7 Base Lab Guide
 ** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.adoc[Read Online]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.pdf[PDF]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.xml[Docbook]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/CentOS7/Centos07Base.epub[ePub]
