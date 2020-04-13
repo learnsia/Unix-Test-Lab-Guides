@@ -1,0 +1,1487 @@
+<?xml version="1.0" encoding="UTF-8"?><?asciidoc-toc?><?asciidoc-numbered?><article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Base Lab Configuration For CentOS 7</title>
+<date>2020-04-13</date>
+</info>
+<simpara>Michael Pare &lt;<link xl:href="mailto:michael.pare@mymail.champlain.edu">michael.pare@mymail.champlain.edu</link>&gt;
+version 0.1, 2020-04-12</simpara>
+<section xml:id="_introduction">
+<title>Introduction</title>
+<simpara><emphasis role="strong">Terminology</emphasis></simpara>
+<simpara>A Records.<?asciidoc-br?>
+AAAA Records.<?asciidoc-br?>
+Active Directory (AD).<?asciidoc-br?>
+CNAME Records.<?asciidoc-br?>
+Domain Controller (DC).<?asciidoc-br?>
+Domain Name System (DNS).<?asciidoc-br?>
+Dynamic Host Configuration Protocol (DHCP).<?asciidoc-br?>
+Firewalld.<?asciidoc-br?>
+Google Public DNS.<?asciidoc-br?>
+GNU’s Not Linux (GNU).<?asciidoc-br?>
+GNU nano.<?asciidoc-br?>
+IP Forwarding.<?asciidoc-br?>
+iptables.<?asciidoc-br?>
+Network Address Translation (NAT).<?asciidoc-br?>
+Network Interface Controller (NIC).<?asciidoc-br?>
+Network Manager (nmtui).<?asciidoc-br?>
+NS Records.<?asciidoc-br?>
+PTR Records.<?asciidoc-br?>
+Samba.<?asciidoc-br?>
+Xfce Desktop Environment.<?asciidoc-br?></simpara>
+<section xml:id="_disclaimer">
+<title>Disclaimer</title>
+<simpara>This website contains work created for informational purposes. Information may be out of date or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</simpara>
+<simpara>The entire risk arising out of the use of these guides remains with you. IN NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY, OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides</simpara>
+</section>
+</section>
+<section xml:id="_network_design">
+<title>Network Design</title>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="networkdiagram.jpg"/>
+</imageobject>
+<textobject><phrase>network diagram</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/fire.png"/>
+</imageobject>
+<textobject><phrase>fire</phrase></textobject>
+</inlinemediaobject> <emphasis role="strong"><emphasis>Firewall</emphasis></emphasis></simpara>
+<simpara>IP Address: 192.168.100.1/24</simpara>
+<simpara>Hostname: firewall.college.com</simpara>
+<literallayout class="monospaced">The Firewall’s purpose is to handle traffic between the Intranet and Internet. This means that it will act as a router directing traffic. There are two interfaces on Firewall, one is the external/Internet-facing called ens192 and the other is the internal/Intranet-facing called ens224.</literallayout>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/server.png"/>
+</imageobject>
+<textobject><phrase>server</phrase></textobject>
+</inlinemediaobject> <emphasis role="strong"><emphasis>DC1</emphasis></emphasis></simpara>
+<simpara>IP Address: 192.168.100.2</simpara>
+<simpara>Gateway: 192.168.100.1</simpara>
+<simpara>DNS Server: 127.0.0.1</simpara>
+<simpara>Hostname: dc1.college.com</simpara>
+<literallayout class="monospaced">This will be configured as the Intranet’s Domain Name System (DNS) and the Dynamic Host Configuration Protocol (DHCP) server.</literallayout>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/database.png"/>
+</imageobject>
+<textobject><phrase>database</phrase></textobject>
+</inlinemediaobject> <emphasis role="strong"><emphasis>App1</emphasis></emphasis></simpara>
+<simpara>IP Address: 192.168.100.3</simpara>
+<simpara>Gateway: 192.168.100.1</simpara>
+<simpara>DNS Server: 192.168.100.2</simpara>
+<simpara>Hostname: app1.college.com</simpara>
+<literallayout class="monospaced">This is an internal web and application server.</literallayout>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/desktop.png"/>
+</imageobject>
+<textobject><phrase>desktop</phrase></textobject>
+</inlinemediaobject> <emphasis role="strong"><emphasis>Client1</emphasis></emphasis>
+IP Address: Dynamic</simpara>
+<simpara>DNS Server: 192.168.100.2</simpara>
+<simpara>Hostname: client1.college.com</simpara>
+<literallayout class="monospaced">Client1 is a workstation that has the ability to switch between the Intranet and Internet subnet.</literallayout>
+</section>
+<section xml:id="_i_configure_firewall">
+<title>I. Configure Firewall</title>
+<simpara role="lead">The below instructions detail the installation and setup of Firewall. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+<section xml:id="_install_the_operating_system_on_firewall">
+<title>Install the Operating System on Firewall</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start CentOS7 Firewall.</simpara>
+</listitem>
+<listitem>
+<simpara>Hit Enter to select “Install CentOS 7.”</simpara>
+</listitem>
+<listitem>
+<simpara>On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.</simpara>
+</listitem>
+<listitem>
+<simpara>On “Installation Summary,” under “System,” select “Installation Destination.”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Check and click that the VMware Virtual disk has been selected. It will highlight in blue.</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Done” in the top left-hand corner to move back to the “Installation Summary” page.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>To continue, click “Begin Installation.”</simpara>
+</listitem>
+<listitem>
+<simpara>In “Configuration,” set the appropriate Root Password.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Root Password: <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Ch@mplain!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>On the same “Configuration” screen, Create a User.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Full Name: Champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended User Name: <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Check box “Make this user administrator”</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended Password: <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> S3cur1ty!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Once installation is complete, click “Reboot.”</simpara>
+</listitem>
+<listitem>
+<simpara>Logon to the credentials you just created.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: root</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: Ch@mplain!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: champlain</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip">
+<title>Configure TCP/IP</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Ensure that Network Manager is running. Type <literal>systemctl status NetworkManager</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You should see “Active: active (running)” in green if it is running.</simpara>
+</listitem>
+<listitem>
+<simpara>If it is not running, enter the command sudo <literal>systemctl start NetworkManager.service</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>If the service fails to launch, check the logs by entering the command <literal>sudo systemctl status NetworkManager.service -l</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>This is for the Internet-facing interface. Enter the command <literal>nmtui</literal> to enter the Network Manager.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select the Internet-facing interface, ens192, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “&lt;Automatic&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Now, repeat for Intranet-facing interface.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select the Intranet-facing interface, ens224, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “&lt;Manual&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Under “Addresses” add in “192.168.100.1/24”</simpara>
+</listitem>
+<listitem>
+<simpara>At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Change the hostname. To change the hostname to firewall.college.com use the following command: <literal>sudo hostnamectl set-hostname firewall.college.com</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Restart the network using <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_and_use_of_nano">
+<title>Install and Use of Nano</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Run the command sudo <literal>yum install nano -y</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_nat_rules">
+<title>Configure NAT Rules</title>
+<literallayout class="monospaced">This will allow the system to act as a router and to allow traffic from the internal network out to the external network.</literallayout>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Enable IP forwarding by entering the command <literal>sudo echo “net.ipv4.ip_forward = 1” &gt;&gt; /etc/sysctl.d/ip_forward.conf</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You will need to be root to perform this task.</simpara>
+</listitem>
+<listitem>
+<simpara>Switch back to champlain user afterwards using su champlain.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Add the external-facing NIC to Firewalld’s “public” zone by typing: <literal>sudo firewall-cmd --zone=public --add-interface=ens192 --permanent</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Where ens192 is the name of the external interface</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Add the internal-facing NIC to Firewalld’s “internal” zone by typing: <literal>sudo firewall-cmd --zone=internal --add-interface=ens224 --permanent</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Where “ens224” is the name of the internal interface</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Apply masquerading to the external Firewalld zone by typing: <literal>sudo firewall-cmd --zone=public --add-masquerade --permanent</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Save those changes by typing: <literal>sudo firewall-cmd --complete-reload</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enable NAT by entering the command <literal>sudo firewall-cmd --permanent --direct --passthrough ipv4 -t nat -l POSTROUTING -o ens224 -j MASQUERADE -s 192.168.100.0/24</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Restart the firewall to save using <literal>sudo firewall-cmd --reload</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure NAT rules on iptables. Enter the following commands.
+<literal>sudo iptables -F</literal>
+<literal>sudo iptables -P INPUT ACCEPT</literal>
+<literal>sudo iptables -P OUTPUT ACCEPT</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Ensure NAT rules on iptables remains on boot. Add in the commands from earlier for NAT by entering the command <literal>sudo nano /etc/rc.local</literal>. This will open the file in Nano Editor.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Add in the following at the end:</simpara>
+<literallayout class="monospaced"># NAT Rules
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT</literallayout>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="natrules.jpg"/>
+</imageobject>
+<textobject><phrase>Network Address Translation rules</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>The above ensures that the NAT rules are still in place on reboot.</simpara>
+</listitem>
+<listitem>
+<simpara>Press Ctrl+X to exit the Nano Editor then hit Y to save the file and hit Enter to save it with the same name.</simpara>
+</listitem>
+</orderedlist>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/star.png"/>
+</imageobject>
+<textobject><phrase>star</phrase></textobject>
+</inlinemediaobject> Congratulations, Firewall is now configured.</simpara>
+</section>
+</section>
+<section xml:id="_ii_configure_dc1">
+<title>II. Configure DC1</title>
+<simpara role="lead">The below instructions detail the installation and setup of DC1. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+<section xml:id="_install_the_operating_system_on_dc1">
+<title>Install the Operating System on DC1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start CentOS7 DC1.</simpara>
+</listitem>
+<listitem>
+<simpara>Hit Enter to select “Install CentOS 7.”</simpara>
+</listitem>
+<listitem>
+<simpara>On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.</simpara>
+</listitem>
+<listitem>
+<simpara>On “Installation Summary,” under “System,” select “Installation Destination.”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Check and click that the VMware Virtual disk has been selected. It will highlight in blue.</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Done” in the top left-hand corner to move back to the “Installation Summary” page.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>To continue, click “Begin Installation.”</simpara>
+</listitem>
+<listitem>
+<simpara>In “Configuration,” set the appropriate Root Password.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Root Password: Ch@mplain!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>On the same “Configuration” screen, Create a User.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Full Name: Champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended User Name: champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Check box “Make this user administrator”</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended Password: S3cur1ty!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Once installation is complete, click “Reboot.”</simpara>
+</listitem>
+<listitem>
+<simpara>Logon to the credentials you just created.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: root</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: Ch@mplain!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: champlain</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_on_dc1">
+<title>Configure TCP/IP on DC1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Ensure that Network Manager is running. Type <literal>systemctl status NetworkManager</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You should see “Active: active (running)” in green if it is running.</simpara>
+</listitem>
+<listitem>
+<simpara>If it is not running, enter the command <literal>sudo systemctl start NetworkManager.service</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>If the service fails to launch, check the logs by entering the command <literal>sudo systemctl status NetworkManager.service -l</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command nmtui to enter the Network Manager.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select ens192, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “&lt;Manual&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Under “Addresses” add in 192.168.100.2/24.</simpara>
+</listitem>
+<listitem>
+<simpara>Under “Gateway” add in the address of the router: 192.168.100.1.</simpara>
+</listitem>
+<listitem>
+<simpara>Under “DNS servers” add in the address of Google: 8.8.8.8.</simpara>
+</listitem>
+<listitem>
+<simpara>This is a temporary setting to ensure Internet connectivity while downloading the required packages to configure DNS and DHCP.</simpara>
+</listitem>
+<listitem>
+<simpara>At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Change the hostname. To change the hostname to dc1.college.com use the following command: <literal>sudo hostnamectl set-hostname dc1.college.com</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Restart the network using <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_and_use_of_nano_2">
+<title>Install and Use of Nano</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Run the command <literal>sudo yum install nano -y</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_dc1_as_dns_server">
+<title>Configure DC1 as DNS Server</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install DNS using the command <literal>sudo yum install bind bind-utils -y</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Configure bind by editing named.conf. Use the command <literal>sudo nano /etc/named.conf</literal> to do so. Make the following edits.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Edit this line to look like by adding in the IP address of the DNS server:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="listenport53.jpg"/>
+</imageobject>
+<textobject><phrase>rule to listen on port 53 which is dns port</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Comment out “listen-on-v6 port 53 { ::1; };” by adding a pound (#) sign:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="listenport53v6.jpg"/>
+</imageobject>
+<textobject><phrase>rule to listen on port 53 for ipv6</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Edit “allow-query” to add in the subnet to look like:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="allowquerysubnet.jpg"/>
+</imageobject>
+<textobject><phrase>rule to give the subnet permission to query</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Add in a section for “forwarders”:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dnsforwardersrule.jpg"/>
+</imageobject>
+<textobject><phrase>rule to forward requests to DNS ips</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>At the end add in “include “/etc/named/named.conf.local”;”</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="namedconfinclude.jpg"/>
+</imageobject>
+<textobject><phrase>rule to include the file named.conf.local for dns</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Create and edit named.conf.local. Edit using: <literal>sudo nano etc/named/named.conf.local</literal>. Fill in this new, blank file with the following information.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="namedconflocal.jpg"/>
+</imageobject>
+<textobject><phrase>the local named dns configuration</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Now, you will need to create the two files referenced in “etc/named/named.conf.local”<?asciidoc-br?>
+First, create the forwarder configuration.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Make the zones directory in /etc/named, <literal>sudo mkdir /etc/named/zones</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Create a file using <literal>sudo nano /etc/named/zones/db.college.com</literal>. In the end, it should like like the below screenshot.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dbcollege.jpg"/>
+</imageobject>
+<textobject><phrase>college dns zone</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Next, setup the reverse zone configuration file.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Create a file using sudo nano /etc/named/zones/db.100.168.192. In the end, it should like the below screenshot.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dbreverse.jpg"/>
+</imageobject>
+<textobject><phrase>college reverse address dns zone</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Start the DNS server.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enable the DNS server: <literal>sudo systemctl enable named</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Start the DNS server: sudo systemctl start named</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Allow port 53 for DNS queries.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Allow port 53/tcp and 53/udp through on the firewall: <literal>sudo firewall-cmd --permanent --add-port={53/tcp,53/udp}</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Reload the firewall: <literal>sudo firewall-cmd --reload</literal></simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_reconfigure_tcpip_on_dc1">
+<title>Reconfigure TCP/IP on DC1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Enter the command <literal>nmtui</literal> to enter the Network Manager.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select ens192, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Under “DNS servers” remove 8.8.8.8 and add in the address: 127.0.0.1</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Restart the network: <literal>sudo systemctl restart network</literal></simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_dhcp_on_dc1">
+<title>Configure DHCP on DC1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install DHCP: <literal>sudo yum install dhcp -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Open the DHCP configuration file: <literal>sudo nano /etc/dhcp/dhcpd.conf</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Edit the configuration file to look like the following:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Make sure to change the hardware ethernet address to your Client1’s address .</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="dhcpconf.jpg"/>
+</imageobject>
+<textobject><phrase>dhcp configuration file</phrase></textobject>
+</mediaobject>
+</informalfigure>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="clientreservation.jpg"/>
+</imageobject>
+<textobject><phrase>rule to reserve an ip for client1</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Start the DHCP server: <literal>sudo systemctl start dhcpd</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enable the DHCP server: <literal>sudo systemctl enable dhcpd</literal></simpara>
+</listitem>
+</orderedlist>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/star.png"/>
+</imageobject>
+<textobject><phrase>star</phrase></textobject>
+</inlinemediaobject> Congratulations, DC1 is now configured.</simpara>
+</section>
+</section>
+<section xml:id="_iii_configure_app1">
+<title>III. Configure App1</title>
+<simpara role="lead">The below instructions detail the installation and setup of App1. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+<section xml:id="_install_the_operating_system_on_app1">
+<title>Install the Operating System on App1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start CentOS7 App1.</simpara>
+</listitem>
+<listitem>
+<simpara>Hit Enter to select “Install CentOS 7.”</simpara>
+</listitem>
+<listitem>
+<simpara>On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.</simpara>
+</listitem>
+<listitem>
+<simpara>On “Installation Summary,” under “System,” select “Installation Destination.”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Check and click that the VMware Virtual disk has been selected. It will highlight in blue.</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Done” in the top left-hand corner to move back to the “Installation Summary” page.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>To continue, click “Begin Installation.”</simpara>
+</listitem>
+<listitem>
+<simpara>In “Configuration,” set the appropriate Root Password.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Root Password: Ch@mplain!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>On the same “Configuration” screen, Create a User.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Full Name: Champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended User Name: champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Check box “Make this user administrator”</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Once installation is complete, click “Reboot.”</simpara>
+</listitem>
+<listitem>
+<simpara>Logon to the credentials you just created.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: root</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: Ch@mplain!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: champlain</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_on_app1">
+<title>Configure TCP/IP on App1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Ensure that Network Manager is running. Type <literal>systemctl status NetworkManager</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You should see “Active: active (running)” in green if it is running.</simpara>
+</listitem>
+<listitem>
+<simpara>If it is not running, enter the command <literal>sudo systemctl start NetworkManager.service</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>If the service fails to launch, check the logs by entering the command <literal>sudo systemctl status NetworkManager.service -l</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>nmtui</literal> to enter the Network Manager.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select ens192, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to ensure that “IPv4 CONFIGURATION” is set to “&lt;Manual&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Under “Addresses” add in 192.168.100.3/24.</simpara>
+</listitem>
+<listitem>
+<simpara>Under “Gateway” add in the address of the router: 192.168.100.1.</simpara>
+</listitem>
+<listitem>
+<simpara>Under “DNS servers” add in the address of the DNS Server: 192.168.100.2</simpara>
+</listitem>
+<listitem>
+<simpara>At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+<listitem>
+<simpara>Change the hostname. To change the hostname to app1.college.com use the following command: <literal>sudo hostnamectl set-hostname app1.college.com</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Restart the network using <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_and_use_of_nano_3">
+<title>Install and Use of Nano</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Run the command <literal>sudo yum install nano -y</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_web_server_role_on_app1">
+<title>Install Web Server Role on App1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install Apache: <literal>sudo yum install httpd -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enable Apache: <literal>sudo systemctl enable httpd</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Start Apache: <literal>sudo systemctl start httpd</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Allow Apache through the firewall: <literal>sudo firewall-cmd --permanent --add-service=http</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Reload the firewall: <literal>sudo firewall-cmd --reload</literal></simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_file_sharing_on_app1">
+<title>Configure File Sharing on App1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install Samba: <literal>sudo yum install samba samba-client samba-common -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create a backup of the default Samba configuration: <literal>sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create a new Samba configuration file: <literal>sudo nano /etc/samba/smb.conf</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Edit it to look like the following:</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="sambaconf.jpg"/>
+</imageobject>
+<textobject><phrase>samba configuration file</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Create the actual share: <literal>sudo mkdir -p /samba/allaccess</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Allow Samba through the firewall: <literal>sudo firewall-cmd --permanent --add-service=samba</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Reload the firewall: <literal>sudo firewall-cmd --reload</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Move into Samba’s directory: <literal>cd /samba</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Change the permissions: <literal>sudo chmod -R 0755 allaccess/</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Change the permissions: <literal>sudo chown -R nobody:nobody allaccess/</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Configure SELinux to allow access to the Samba directory: <literal>sudo chcon -t samba_share_t allaccess/</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Enable SMB and NMB: <literal>sudo systemctl enable smb</literal> and <literal>sudo systemctl enable nmb</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Start SMB and NMB: <literal>sudo systemctl start smb</literal> and <literal>sudo systemctl start nmb</literal></simpara>
+</listitem>
+<listitem>
+<simpara>This finishes the creation of the Samba share that is accessible to all users on the LAN.</simpara>
+</listitem>
+<listitem>
+<simpara>Set the specific SELinux Boolean values that you will need to install another package containing some utilities: <literal>sudo yum install policycoreutils-python -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create a group for users who will be allowed access to the share: <literal>sudo groupadd samby</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create some users: <literal>sudo useradd user1</literal> and <literal>sudo useradd user2</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Add new users to the new group: <literal>sudo usermod -a -G samby user1</literal> and <literal>sudo usermod -a -G samby user2</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Create passwords for the new users: <literal>sudo smbpasswd -a user1</literal> and <literal>sudo smbpasswd -a user2</literal></simpara>
+</listitem>
+<listitem>
+<simpara>May be beneficial to use the same <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> password: Pr1vacy!</simpara>
+</listitem>
+<listitem>
+<simpara>Make the directory that will be used for the share: <literal>cd /</literal> and <literal>sudo mkdir /samby</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Modify the permissions of the /samby share: <literal>sudo chmod 0770 /samby</literal> and <literal>sudo chgrp samby /samby</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Edit the SELinux settings for the /Samby share:</simpara>
+<itemizedlist>
+<listitem>
+<simpara><literal>sudo setsebool -P samba_export_all_ro=1 samba_export_all_rw=1</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>getsebool -a | grep samba_export</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo semanage fcontext -at samba_share_t ‘/samby(/.*)?’</literal></simpara>
+</listitem>
+<listitem>
+<simpara><literal>sudo restorecon /samby</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>Edit the smb.conf file: <literal>sudo nano /etc/samba/smb.conf</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Keep everything in there and add the following section to the smb.conf; that section should look like:</simpara>
+</listitem>
+<listitem>
+<simpara>Restart the SMB services: sudo systemctl restart nmb and sudo systemctl restart smb</simpara>
+</listitem>
+</orderedlist>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/star.png"/>
+</imageobject>
+<textobject><phrase>star</phrase></textobject>
+</inlinemediaobject> Congratulations, App1 is now configured.</simpara>
+</section>
+</section>
+<section xml:id="_iv_configure_client1">
+<title>IV. Configure Client1</title>
+<simpara role="lead">The below instructions detail the installation and setup of the Client. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+<section xml:id="_install_the_operating_system_on_client1">
+<title>Install the Operating System on Client1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Start CentOS7 Client1.</simpara>
+</listitem>
+<listitem>
+<simpara>Hit Enter to select “Install CentOS 7.”</simpara>
+</listitem>
+<listitem>
+<simpara>On the “Welcome to CentOS Linux 7” page, select the appropriate language and region.</simpara>
+</listitem>
+<listitem>
+<simpara>On “Installation Summary,” under “System,” select “Installation Destination.”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Check and click that the VMware Virtual disk has been selected. It will highlight in blue.</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Done” in the top left-hand corner to move back to the “Installation Summary” page.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>To continue, click “Begin Installation.”</simpara>
+</listitem>
+<listitem>
+<simpara>In “Configuration,” set the appropriate Root Password.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> Root <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: Ch@mplain!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>On the same “Configuration” screen, Create a User.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Recommended Full Name: Champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User Name: champlain</simpara>
+</listitem>
+<listitem>
+<simpara>Check box “Make this user administrator”</simpara>
+</listitem>
+<listitem>
+<simpara>Recommended <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Once installation is complete, click “Reboot.”</simpara>
+</listitem>
+<listitem>
+<simpara>Logon to the credentials you just created.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: root</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: Ch@mplain!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/user.png"/>
+</imageobject>
+<textobject><phrase>user</phrase></textobject>
+</inlinemediaobject> User: champlain</simpara>
+<itemizedlist>
+<listitem>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/key.png"/>
+</imageobject>
+<textobject><phrase>key</phrase></textobject>
+</inlinemediaobject> Password: S3cur1ty!18</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_configure_tcpip_on_client1">
+<title>Configure TCP/IP on Client1</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Ensure that Network Manager is running. Type <literal>systemctl status NetworkManager</literal>.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>You should see “Active: active (running)” in green if it is running.</simpara>
+</listitem>
+<listitem>
+<simpara>If it is not running, enter the command <literal>sudo systemctl start NetworkManager.service</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>If the service fails to launch, check the logs by entering the command <literal>sudo systemctl status NetworkManager.service -l</literal>.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Enter the command <literal>nmtui</literal> to enter the Network Manager.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Select “Edit a connection.”</simpara>
+</listitem>
+<listitem>
+<simpara>Select ens192, and use the arrow keys to select “&lt;Edit…&gt;”</simpara>
+</listitem>
+<listitem>
+<simpara>Under “DNS servers” add in the address of the DNS Server: 192.168.100.2</simpara>
+</listitem>
+<listitem>
+<simpara>At the very bottom, ensure that the brackets in front of “Automatically connect” have an X by hitting the spacebar while highlighting them.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “&lt;OK&gt;” then “&lt;Back&gt;” and press Enter to go back to the main menu of Network Manager.</simpara>
+</listitem>
+<listitem>
+<simpara>Use the arrow keys to select “Quit” and press Enter to exit the editor.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Change the hostname. To change the hostname to dc1.college.com use the following command: <literal>sudo hostnamectl set-hostname client1.college.com</literal>.</simpara>
+</listitem>
+<listitem>
+<simpara>Restart the network using <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_install_gui">
+<title>Install GUI</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install epel-release: <literal>sudo yum install epel-release -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Install groupinstall: <literal>sudo yum groupinstall “Server with GUI” -y</literal></simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>This will be very time-intensive.</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Install XFCE: <literal>sudo yum groupinstall “XFCE” -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Tell the machine to boot to the GUI by default: <literal>sudo systemctl set-default graphical.target</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Reboot the machine: <literal>sudo reboot</literal></simpara>
+</listitem>
+<listitem>
+<simpara>When the machine is rebooted, you may be taken to a screen that looks similar to the initial install screen.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Click “License Information”</simpara>
+</listitem>
+<listitem>
+<simpara>Click the box next to “I accept the license agreement” and then click “Done”</simpara>
+</listitem>
+<listitem>
+<simpara>Click “Finish Configuration”, which will take you to the login screen of the GUI</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Login.</simpara>
+</listitem>
+<listitem>
+<simpara>Click the gear icon and select “Xfce Session”</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Enter your password and click “Sign In”</simpara>
+</listitem>
+<listitem>
+<simpara>When you first login, you will get a pop-up for the first start of the panel. Click “Use default config”</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_test_access_to_resources_on_busnet_subnet">
+<title>Test Access to Resources on BUSNET Subnet</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Test Access to the Web Server</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Under Applications, open Firefox Web Browser.</simpara>
+</listitem>
+<listitem>
+<simpara>Enter the IP address of App1 (192.168.100.3) into the URL bar.</simpara>
+</listitem>
+<listitem>
+<simpara>If it is configured correctly, you should see the Apache test page, shown below.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="apachetest.jpg"/>
+</imageobject>
+<textobject><phrase>apache test page example</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Test Access to the Samba Share</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Under Applications, open a Terminal.</simpara>
+</listitem>
+<listitem>
+<simpara>Install Samba: <literal>sudo yum install samba-client samba-common cifs-utils -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Allow Samba through the firewall: <literal>sudo firewall-cmd --permanent --add-service=samba</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Reload the firewall: <literal>sudo firewall-cmd --reload</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Log into the SMB share: <literal>smbclient //app1.college.com/samby -U user1</literal></simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="sambatest.jpg"/>
+</imageobject>
+<textobject><phrase>samba test connection example</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+<listitem>
+<simpara>Alternatively, you should be able to access the “WORKGROUP” share through “File Manager” and then either browse to “allaccess” share, which allows all users or sign into the “samby” share.</simpara>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata align="center" fileref="workgroupshare.jpg"/>
+</imageobject>
+<textobject><phrase>workgroup share exmaple</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/star.png"/>
+</imageobject>
+<textobject><phrase>star</phrase></textobject>
+</inlinemediaobject> Congratulations, Client1 is now configured.</simpara>
+<simpara><?asciidoc-hr?></simpara>
+<simpara role="lead"><inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/star.png"/>
+</imageobject>
+<textobject><phrase>star</phrase></textobject>
+</inlinemediaobject> Congratulations, the Base Lab Configuration is finished.</simpara>
+</section>
+</section>
+<section xml:id="_troubleshooting">
+<title>Troubleshooting</title>
+<section xml:id="_location_to_logs_configuration_files">
+<title>Location to Logs &amp; Configuration Files</title>
+<itemizedlist>
+<listitem>
+<simpara>General Logs: /var/log/messages</simpara>
+</listitem>
+<listitem>
+<simpara>Samba Configuration: /etc/samba/smb.conf</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="_i_firewall_installing_nano_cannot_install_nano">
+<title>I. Firewall - Installing Nano - Cannot install nano</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Check to see if you can ping out by using <literal>ping 8.8.8.8</literal>. If you can’t then this should be a solution.</simpara>
+</listitem>
+<listitem>
+<simpara>Sometimes, when interfaces are edited in Network Manager, there will be a second ens192. Delete it.</simpara>
+</listitem>
+<listitem>
+<simpara>First check Network Manager by using <literal>nmtui</literal> to see if the interfaces are set up properly.</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>The external/Internet interface, ens192, should have:</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>IPv4 Configuration set to Automatic</simpara>
+</listitem>
+<listitem>
+<simpara>Automatically connect check-boxed</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>The internal/Intranet interface, ens224, should have:</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>IPv4 Configuration set to Manual</simpara>
+</listitem>
+<listitem>
+<simpara>IP Address: 192.168.100.1/24</simpara>
+</listitem>
+<listitem>
+<simpara>Automatically connect check-boxed</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Restart your network by using <literal>sudo systemctl restart network</literal>.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_ii_firewall_systemctl_restart_network">
+<title>II. Firewall - systemctl restart network</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>It’s okay if network won’t restart.</simpara>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_iii_firewall_tcpdump">
+<title>III. Firewall - tcpdump</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Install tcpdump on your Firewall: <literal>sudo yum install tcpdump -y</literal></simpara>
+</listitem>
+<listitem>
+<simpara>Switches:</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>-D: Display available interfaces</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>sudo tcpdump -D</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>-i: Capture packets from a specific interface</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>sudo tcpdump -i ens224</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>-n: Capture IP address</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>sudo tcpdump -n</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>port: Captures from a specific port</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>tcpdump -i ens224 port 22</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>src: Captures packets from source IP</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>tcpdump -i ens224 src 192.168.0.2</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>tcp: Captures only TCP packets</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Ex: <literal>sudo tcpdump -i ens224 tcp</literal></simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+</section>
+</article>
