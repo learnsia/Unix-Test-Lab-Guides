@@ -1,0 +1,15 @@
+= Unix Test Lab Guide Project
+
+The Unix Test Lab Guide (UTLG) Project is designed to explain how to configure services and software in context to a real network.  There are many website tutorials and forums where you can find solutions to various technical problems.  There are guides that explain how to setup a service such as DHCP or DNS.  However, it often requires reviewing multiple websites to understand how those all work together.
+
+This project is inspired by the http://www.tldp.org/[The Linux Documentation Project]  and the https://social.technet.microsoft.com/wiki/contents/articles/1262.test-lab-guides.aspx[Microsoft Test Lab Guides].  Specifically, the Microsoft TLG site has a wealth of information on configuring various Microsoft services.  What is unique is that all guides start with a base configuration - the Base Test Lab Guide.  That is the starting network that should be referenced when learning how to incorporate a service.  That helps to provide reference and context to how it integrates into an existing infrastructure.  This is similar to what we are wanting to achieve with the UTLGs.
+
+This project is by https://www.champlain.edu[Champlain College]  students to create documentation on how to setup a network from scratch using a consistent theme so those that want to learn a specific OS can do so in context to building a real network.  Anyone, however, can contribute to these documents, but must use the respective base lab guide as the starting point for the integration of a specific network service or software application.
+
+While these guides use a virtual environment for the setup, the configurations would apply in a non-virtual environment.
+
+We hope that you find these guides helpful and that you'll provide us feedback on how you are using these guides or, more importantly, contribute to the project.
+
+You don't have to convert the documents to Asciidoc, we can do that for you after testing the instructions that are sent.
+
+Please contact me:  dunston@champlain.edu
