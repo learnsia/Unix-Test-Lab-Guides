@@ -530,8 +530,8 @@ icon:star[role="yellow"] Congratulations, the Base Lab Configuration is finished
 .. tcp: Captures only TCP packets
 ***** Ex: `sudo tcpdump -i ens224 tcp`
 
-= Contributors
+.Contributors
 
-Kelsey Ward
-LaKysha Rock
-Michael Pare
+* Kelsey Ward
+* LaKysha Rock
+* Michael Pare
