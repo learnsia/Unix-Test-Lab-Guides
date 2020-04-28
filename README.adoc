@@ -43,3 +43,6 @@ Please contact me:  dunston@champlain.edu
 ** OpenBSD 6.6 Add-on Labs
 *** Lab 1
 *** Lab 2
+* FreeBSD 12.1 (in process of being converted to AsciiDoc)
+* Debian 9 (in process of being convereted to AsciiDoc)
+* Ubuntu 18.04 (final documentationn needs testing)
