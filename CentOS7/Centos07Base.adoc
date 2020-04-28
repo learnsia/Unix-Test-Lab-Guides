@@ -6,7 +6,25 @@
 Michael Pare <michael.pare@mymail.champlain.edu>
 version 0.1, 2020-04-12
 
+== Abstract 
+This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using CentOS 7 servers and a CentOS 7 client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the CentOS 7 Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a CentOS 7 based environment. 
+
 == Introduction
+
+The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.
+
+This TLG is written with the goals of reusability and extensibility in mind. The purpose of this particular TLG is to enable the creation of a basic network utilizing CentOS 7 as the central operating system. Once this network is complete several other TLGs can be built on top of this base configuration.
+
+Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.
+
+****
+Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.
+
+* Highlight and right-click a command from this document
+* Click Copy
+* Right-click in the virtual machine where you would like to copy the text to and click Paste
+* If you are working inside a terminal, you may only need to right click in order to copy the command over
+****
 
 *Terminology*
 
@@ -31,13 +49,19 @@ PTR Records. +
 Samba. + 
 Xfce Desktop Environment. + 
 
-=== Disclaimer
+== Disclaimer
 
 This website contains work created for informational purposes. Information may be out of date or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.
  
 The entire risk arising out of the use of these guides remains with you. IN NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY, OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides
 
-== Network Design
+== Overview of this Test Lab Guide
+
+This document contains instructions for settings up the CentOS 7 base configuration test lab by deploying two servers running CentOS 7, one client running CentOS 7 and one firewall built on CentOS 7. Once completed, the lab will simulate the functioning of a private intranet.
+
+Important: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual).
+
+=== Network Design
 
 image::networkdiagram.jpg[network diagram, align="center"]
 
@@ -50,7 +74,7 @@ Hostname: firewall.college.com
 	The Firewall’s purpose is to handle traffic between the Intranet and Internet. This means that it will act as a router directing traffic. There are two interfaces on Firewall, one is the external/Internet-facing called ens192 and the other is the internal/Intranet-facing called ens224.
 
 icon:server[] *_DC1_*
- 
+
 IP Address: 192.168.100.2
 
 Gateway: 192.168.100.1
@@ -59,7 +83,7 @@ DNS Server: 127.0.0.1
 
 Hostname: dc1.college.com
 
-	This will be configured as the Intranet’s Domain Name System (DNS) and the Dynamic Host Configuration Protocol (DHCP) server. 
+	This will be configured as the Intranet’s Domain Name System (DNS) and the Dynamic Host Configuration Protocol (DHCP) server.
 	
 icon:database[] *_App1_*
 
@@ -81,9 +105,20 @@ DNS Server: 192.168.100.2
 Hostname: client1.college.com
 
 	Client1 is a workstation that has the ability to switch between the Intranet and Internet subnet.
+	
+=== Hardware and Software Requirements
 
+Minimum requirements:
 
-== I. Configure Firewall
+* Four functioning computers or VMs for configuration with OpenBSD installed.
+	
+=== Using “Sudo”
+
+When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).
+
+== Configuring the Environment
+
+=== *Step One - Configure Firewall*
 
 [.lead]
 The below instructions detail the installation and setup of Firewall. The last section, Troubleshooting, has some information on common problems that people come across.
@@ -172,7 +207,7 @@ image::natrules.jpg[Network Address Translation rules, align="center"]
 icon:star[role="yellow"] Congratulations, Firewall is now configured. 
 
 
-== II. Configure DC1
+=== *Step Two - Configure DC1*
 
 [.lead]
 The below instructions detail the installation and setup of DC1. The last section, Troubleshooting, has some information on common problems that people come across.
@@ -300,7 +335,7 @@ image::clientreservation.jpg[rule to reserve an ip for client1, align="center"]
 icon:star[role="yellow"] Congratulations, DC1 is now configured.
 
 
-== III. Configure App1
+=== *Step Four - Configure App1*
 
 [.lead]
 The below instructions detail the installation and setup of App1. The last section, Troubleshooting, has some information on common problems that people come across.
@@ -397,7 +432,7 @@ image::sambaconf.jpg[samba configuration file, align="center"]
 
 icon:star[role="yellow"] Congratulations, App1 is now configured.
 
-== IV. Configure Client1
+=== *Step Four - Configure Client1*
 
 [.lead]
 The below instructions detail the installation and setup of the Client. The last section, Troubleshooting, has some information on common problems that people come across.
@@ -530,8 +565,7 @@ icon:star[role="yellow"] Congratulations, the Base Lab Configuration is finished
 .. tcp: Captures only TCP packets
 ***** Ex: `sudo tcpdump -i ens224 tcp`
 
-.Contributors
-
+== Contributors
 * Kelsey Ward
 * LaKysha Rock
 * Michael Pare

@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?><?asciidoc-toc?><?asciidoc-numbered?><article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
 <info>
 <title>Base Lab Configuration For CentOS 7</title>
-<date>2020-04-13</date>
+<date>2020-04-27</date>
 </info>
 <simpara>Michael Pare &lt;<link xl:href="mailto:michael.pare@mymail.champlain.edu">michael.pare@mymail.champlain.edu</link>&gt;
 version 0.1, 2020-04-12</simpara>
+<section xml:id="_abstract">
+<title>Abstract</title>
+<simpara>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using CentOS 7 servers and a CentOS 7 client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the CentOS 7 Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a CentOS 7 based environment.</simpara>
+</section>
 <section xml:id="_introduction">
 <title>Introduction</title>
+<simpara>The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.</simpara>
+<simpara>This TLG is written with the goals of reusability and extensibility in mind. The purpose of this particular TLG is to enable the creation of a basic network utilizing CentOS 7 as the central operating system. Once this network is complete several other TLGs can be built on top of this base configuration.</simpara>
+<simpara>Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.</simpara>
+<sidebar>
+<simpara>Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Highlight and right-click a command from this document</simpara>
+</listitem>
+<listitem>
+<simpara>Click Copy</simpara>
+</listitem>
+<listitem>
+<simpara>Right-click in the virtual machine where you would like to copy the text to and click Paste</simpara>
+</listitem>
+<listitem>
+<simpara>If you are working inside a terminal, you may only need to right click in order to copy the command over</simpara>
+</listitem>
+</itemizedlist>
+</sidebar>
 <simpara><emphasis role="strong">Terminology</emphasis></simpara>
 <simpara>A Records.<?asciidoc-br?>
 AAAA Records.<?asciidoc-br?>
@@ -28,12 +52,16 @@ NS Records.<?asciidoc-br?>
 PTR Records.<?asciidoc-br?>
 Samba.<?asciidoc-br?>
 Xfce Desktop Environment.<?asciidoc-br?></simpara>
+</section>
 <section xml:id="_disclaimer">
 <title>Disclaimer</title>
 <simpara>This website contains work created for informational purposes. Information may be out of date or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</simpara>
 <simpara>The entire risk arising out of the use of these guides remains with you. IN NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY, OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides</simpara>
 </section>
-</section>
+<section xml:id="_overview_of_this_test_lab_guide">
+<title>Overview of this Test Lab Guide</title>
+<simpara>This document contains instructions for settings up the CentOS 7 base configuration test lab by deploying two servers running CentOS 7, one client running CentOS 7 and one firewall built on CentOS 7. Once completed, the lab will simulate the functioning of a private intranet.</simpara>
+<simpara>Important: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual).</simpara>
 <section xml:id="_network_design">
 <title>Network Design</title>
 <informalfigure>
@@ -86,9 +114,26 @@ IP Address: Dynamic</simpara>
 <simpara>Hostname: client1.college.com</simpara>
 <literallayout class="monospaced">Client1 is a workstation that has the ability to switch between the Intranet and Internet subnet.</literallayout>
 </section>
-<section xml:id="_i_configure_firewall">
-<title>I. Configure Firewall</title>
+<section xml:id="_hardware_and_software_requirements">
+<title>Hardware and Software Requirements</title>
+<simpara>Minimum requirements:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Four functioning computers or VMs for configuration with OpenBSD installed.</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="_using_sudo">
+<title>Using “Sudo”</title>
+<simpara>When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).</simpara>
+</section>
+</section>
+<section xml:id="_configuring_the_environment">
+<title>Configuring the Environment</title>
+<section xml:id="_step_one_configure_firewall">
+<title><emphasis role="strong">Step One - Configure Firewall</emphasis></title>
 <simpara role="lead">The below instructions detail the installation and setup of Firewall. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+</section>
 <section xml:id="_install_the_operating_system_on_firewall">
 <title>Install the Operating System on Firewall</title>
 <orderedlist numeration="arabic">
@@ -367,10 +412,10 @@ iptables -P OUTPUT ACCEPT</literallayout>
 <textobject><phrase>star</phrase></textobject>
 </inlinemediaobject> Congratulations, Firewall is now configured.</simpara>
 </section>
-</section>
-<section xml:id="_ii_configure_dc1">
-<title>II. Configure DC1</title>
+<section xml:id="_step_two_configure_dc1">
+<title><emphasis role="strong">Step Two - Configure DC1</emphasis></title>
 <simpara role="lead">The below instructions detail the installation and setup of DC1. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+</section>
 <section xml:id="_install_the_operating_system_on_dc1">
 <title>Install the Operating System on DC1</title>
 <orderedlist numeration="arabic">
@@ -748,10 +793,10 @@ First, create the forwarder configuration.</simpara>
 <textobject><phrase>star</phrase></textobject>
 </inlinemediaobject> Congratulations, DC1 is now configured.</simpara>
 </section>
-</section>
-<section xml:id="_iii_configure_app1">
-<title>III. Configure App1</title>
+<section xml:id="_step_four_configure_app1">
+<title><emphasis role="strong">Step Four - Configure App1</emphasis></title>
 <simpara role="lead">The below instructions detail the installation and setup of App1. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+</section>
 <section xml:id="_install_the_operating_system_on_app1">
 <title>Install the Operating System on App1</title>
 <orderedlist numeration="arabic">
@@ -1055,10 +1100,10 @@ First, create the forwarder configuration.</simpara>
 <textobject><phrase>star</phrase></textobject>
 </inlinemediaobject> Congratulations, App1 is now configured.</simpara>
 </section>
-</section>
-<section xml:id="_iv_configure_client1">
-<title>IV. Configure Client1</title>
+<section xml:id="_step_four_configure_client1">
+<title><emphasis role="strong">Step Four - Configure Client1</emphasis></title>
 <simpara role="lead">The below instructions detail the installation and setup of the Client. The last section, Troubleshooting, has some information on common problems that people come across.</simpara>
+</section>
 <section xml:id="_install_the_operating_system_on_client1">
 <title>Install the Operating System on Client1</title>
 <orderedlist numeration="arabic">
@@ -1483,5 +1528,19 @@ First, create the forwarder configuration.</simpara>
 </listitem>
 </orderedlist>
 </section>
+</section>
+<section xml:id="_contributors">
+<title>Contributors</title>
+<itemizedlist>
+<listitem>
+<simpara>Kelsey Ward</simpara>
+</listitem>
+<listitem>
+<simpara>LaKysha Rock</simpara>
+</listitem>
+<listitem>
+<simpara>Michael Pare</simpara>
+</listitem>
+</itemizedlist>
 </section>
 </article>

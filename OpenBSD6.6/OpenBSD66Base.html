@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.8.dev">
+<title>Test Lab Guide: Open BSD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+/* Uncomment @import statement to use as custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}
+audio,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:none}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*::before,*::after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.stretch{width:100%}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:0}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #dddddf;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite::before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt{background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
+.clearfix::after,.float-group::after{clear:both}
+:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+:not(pre)>code.nobreak{word-wrap:normal}
+:not(pre)>code.nowrap{white-space:nowrap}
+pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
+pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
+pre>code{display:block}
+pre.nowrap,pre.nowrap pre{white-space:pre;word-wrap:normal}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menuref{color:#000}
+.menuseq b:not(.caret),.menuref{font-weight:inherit}
+.menuseq{word-spacing:-.02em}
+.menuseq b.caret{font-size:1.25em;line-height:.8}
+.menuseq i.caret{font-weight:bold;text-align:center;width:.45em}
+b.button::before,b.button::after{position:relative;top:-1px;font-weight:400}
+b.button::before{content:"[";padding:0 3px 0 2px}
+b.button::after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header::before,#header::after,#content::before,#content::after,#footnotes::before,#footnotes::after,#footer::before,#footer::after{content:" ";display:table}
+#header::after,#content::after,#footnotes::after,#footer::after{clear:both}
+#content{margin-top:1.25em}
+#content::before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #dddddf}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #dddddf;padding-bottom:8px}
+#header .details{border-bottom:1px solid #dddddf;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span::before{content:"\00a0\2013\00a0"}
+#header .details br+span.author::before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark::before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber::after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #dddddf;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #e7e7e9;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #e7e7e9;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #e7e7e9;left:auto;right:0}}
+@media screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+#content{margin-bottom:.625em}
+.sect1{padding-bottom:.625em}
+@media screen and (min-width:768px){#content{margin-bottom:1.25em}
+.sect1{padding-bottom:1.25em}}
+.sect1:last-child{padding-bottom:0}
+.sect1+.sect1{border-top:1px solid #e7e7e9}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor::before,h2>a.anchor::before,h3>a.anchor::before,#toctitle>a.anchor::before,.sidebarblock>.content>.title>a.anchor::before,h4>a.anchor::before,h5>a.anchor::before,h6>a.anchor::before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+details,.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+details>summary:first-of-type{cursor:pointer;display:list-item;outline:none;margin-bottom:.75em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock.fit-content>caption.title{white-space:nowrap;width:0}
+.paragraph.lead>p,#preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:1.21875em;line-height:1.6;color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#dbdbd6;margin-bottom:1.25em;padding:1.25em;background:#f3f3f2;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;overflow-x:auto;padding:1em;font-size:.8125em}
+@media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
+@media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
+.literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class="highlight"],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
+.literalblock.output pre{color:#f7f7f8;background:rgba(0,0,0,.9)}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]::before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:inherit;opacity:.5}
+.listingblock:hover code[data-lang]::before{display:block}
+.listingblock.terminal pre .command::before{content:attr(data-prompt);padding-right:.5em;color:inherit;opacity:.5}
+.listingblock.terminal pre .command:not([data-prompt])::before{content:"$"}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.prettyprint{background:#f7f7f8}
+pre.prettyprint .linenums{line-height:1.45;margin-left:2em}
+pre.prettyprint li{background:none;list-style-type:inherit;padding-left:0}
+pre.prettyprint li code[data-lang]::before{opacity:1}
+pre.prettyprint li:not(:first-child) code[data-lang]::before{display:none}
+table.linenotable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.linenotable td[class]{color:inherit;vertical-align:top;padding:0;line-height:inherit;white-space:normal}
+table.linenotable td.code{padding-left:.75em}
+table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;padding-right:.5em}
+pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
+pre.pygments .lineno::before{content:"";margin-right:-.125em}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.75em;margin-right:.5ex;text-align:right}
+.verseblock{margin:0 1em 1.25em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract blockquote::before,.quoteblock.excerpt blockquote::before,.quoteblock .quoteblock blockquote::before{display:none}
+.quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
+.quoteblock.abstract{margin:0 1em 1.25em;display:block}
+.quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin:0 0 1.25em;padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
+.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
+.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
+table.tableblock{max-width:100%;border-collapse:separate}
+p.tableblock:last-child{margin-bottom:0}
+td.tableblock>.content>:last-child{margin-bottom:-1.25em}
+td.tableblock>.content>:last-child.sidebarblock{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
+table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
+table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
+table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px}
+table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0}
+table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
+table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot,table.frame-ends{border-width:1px 0}
+table.stripes-all tr,table.stripes-odd tr:nth-of-type(odd),table.stripes-even tr:nth-of-type(even),table.stripes-hover tr:hover{background:#f8f8f7}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.checklist,ul.none,ol.none,ul.no-bullet,ol.no-bullet,ol.unnumbered,ul.unstyled,ol.unstyled{list-style-type:none}
+ul.no-bullet,ol.no-bullet,ol.unnumbered{margin-left:.625em}
+ul.unstyled,ol.unstyled{margin-left:0}
+ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1.25em;font-size:.8em;position:relative;bottom:.125em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{margin-right:.25em}
+ul.inline{display:-ms-flexbox;display:-webkit-box;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap;list-style:none;margin:0 0 .625em -1.25em}
+ul.inline>li{margin-left:1.25em}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
+.colist td:not([class]):first-child img{max-width:none}
+.colist td:not([class]):last-child{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left{margin:.25em .625em 1.25em 0}
+.imageblock.right{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em;border-width:1px 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none;margin-left:-1.05em}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background:#00fafa}
+.black{color:#000}
+.black-background{background:#000}
+.blue{color:#0000bf}
+.blue-background{background:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background:#fa00fa}
+.gray{color:#606060}
+.gray-background{background:#7d7d7d}
+.green{color:#006000}
+.green-background{background:#007d00}
+.lime{color:#00bf00}
+.lime-background{background:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background:#7d0000}
+.navy{color:#000060}
+.navy-background{background:#00007d}
+.olive{color:#606000}
+.olive-background{background:#7d7d00}
+.purple{color:#600060}
+.purple-background{background:#7d007d}
+.red{color:#bf0000}
+.red-background{background:#fa0000}
+.silver{color:#909090}
+.silver-background{background:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background:#fafa00}
+span.icon>.fa{cursor:default}
+a span.icon>.fa{cursor:inherit}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]::after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@page{margin:1.25cm .75cm}
+@media print{*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+html{font-size:80%}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare)::after,a[href^="https:"]:not(.bare)::after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]::after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span::before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]::before{display:block}
+#footer{padding:0 .9375em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+@media print,amzn-kf8{#header>h1:first-child{margin-top:1.25rem}
+.sect1{padding:0!important}
+.sect1+.sect1{border:0}
+#footer{background:none}
+#footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
+@media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Test Lab Guide: Open BSD</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#trueabstract">Abstract</a></li>
+<li><a href="#trueintroduction">Introduction</a></li>
+<li><a href="#truedisclaimer">Disclaimer</a></li>
+<li><a href="#trueoverview-of-this-test-lab-guide">Overview of this Test Lab Guide</a>
+<ul class="sectlevel2">
+<li><a href="#truenetwork-design">Network Design</a></li>
+<li><a href="#truehardware-and-software-requirements">Hardware and Software Requirements</a></li>
+<li><a href="#trueusing-sudo">Using “Sudo”</a></li>
+</ul>
+</li>
+<li><a href="#trueconfiguring-the-environment">Configuring the Environment</a>
+<ul class="sectlevel2">
+<li><a href="#truestep-one-configuring-the-firewall"><strong>Step One - Configuring the Firewall</strong></a></li>
+<li><a href="#trueconfiguring-nat">Configuring NAT</a></li>
+<li><a href="#truesnapshot-the-configuration">Snapshot the Configuration</a></li>
+<li><a href="#truestep-two-configuring-the-dc"><strong>Step Two - Configuring the DC</strong></a></li>
+<li><a href="#trueconfiguring-dhcp">Configuring DHCP</a></li>
+<li><a href="#trueconfiguring-dns">Configuring DNS</a></li>
+<li><a href="#truesnapshot-the-configuration-2">Snapshot the Configuration</a></li>
+<li><a href="#truestep-three-configuring-the-client"><strong>Step Three - Configuring the Client</strong></a></li>
+<li><a href="#trueconfiguring-client-to-use-dhcp">Configuring Client to use DHCP</a></li>
+<li><a href="#truesnapshot-the-configuration-3">Snapshot the Configuration</a></li>
+<li><a href="#truestep-four-configure-app1"><strong>Step Four - Configure App1</strong></a></li>
+<li><a href="#trueconfiguring-httpd">Configuring HTTPD</a></li>
+<li><a href="#trueconfiguring-smb">Configuring SMB</a></li>
+<li><a href="#truesnapshot-the-configuration-4">Snapshot the Configuration</a></li>
+</ul>
+</li>
+<li><a href="#truetroubleshooting">Troubleshooting</a></li>
+<li><a href="#truecontributors">Contributors</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Michael Pare &lt;<a href="mailto:michael.pare@mymail.champlain.edu">michael.pare@mymail.champlain.edu</a>&gt;
+version 0.1, 2020-04-15</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueabstract"><a class="anchor" href="#trueabstract"></a>Abstract</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using OpenBSD servers and an OpenBSD client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the OpenBSD Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a OpenBSD based environment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueintroduction"><a class="anchor" href="#trueintroduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The purpose of the Test Lab Guide (TLG) documentation is to provide users with hands-on experience with current technologies in known working configurations.  Using a TLG will tell you exactly what machines are needed, how they should be configured, and how to install and configure any additional software.  Completing a TLG will allow you to get the entire experience of configuring different technologies from beginning to end.
+The purpose of this Test Lab Guide is to guide you in creating a Local Area Network (LAN) using machines running OpenBSD.  Once complete, you will have a LAN that will have the following services:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Dynamic Host Configuration Protocol (DHCP)</p>
+</li>
+<li>
+<p>Domain Name System (DNS)</p>
+</li>
+<li>
+<p>HTTP</p>
+</li>
+<li>
+<p>NAT (Network Address Translation)</p>
+</li>
+<li>
+<p>SMB (Samba)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once you complete this lab, you may wish to save this initial configuration.  How you save this configuration will depend on how you’ve created and deployed your test environment.  If you are working in a physical environment, you can image the drives of each machine.  If you are working in a virtual environment, you can take snapshots of each machine which will save all the current settings and configurations.  Having a way to preserve the initial functioning base lab configuration is important because it allows you to quickly revert to this state.  This can be helpful when you want a fresh start to test new products or if you make an error.  These images or snapshots will allow you to focus on deploying new technologies successfully instead of having to constantly rebuild this base.  It is because of this that you should image the drives or take snapshots of each machine upon completion of this TLG.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Highlight and right-click a command from this document</p>
+</li>
+<li>
+<p>Click Copy</p>
+</li>
+<li>
+<p>Right-click in the virtual machine where you would like to copy the text to and click Paste</p>
+</li>
+<li>
+<p>If you are working inside a terminal, you may only need to right click in order to copy the command over</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truedisclaimer"><a class="anchor" href="#truedisclaimer"></a>Disclaimer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This website contains work created for informational purposes. Information may be out of date, or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+</div>
+<div class="paragraph">
+<p>The entire risk arising out of the use of these guides remains with you. IN NO EVENT SHALL CHAMPLAIN COLLEGE, ITS STUDENTS, FACULTY, OR ANYONE ELSE INVOLVED IN THE CREATION, PRODUCTION, OR DELIVERY OF THE GUIDES BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueoverview-of-this-test-lab-guide"><a class="anchor" href="#trueoverview-of-this-test-lab-guide"></a>Overview of this Test Lab Guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OpenBSD TLG is comprised of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One server running OpenBSD named DC1 that is configured as the intranet Domain Name System (DNS), and Dynamic Host Configuration Protocol (DHCP) server</p>
+</li>
+<li>
+<p>One server running OpenBSD named FIREWALL that has two NIC’s and is configured to act as a router/firewall</p>
+</li>
+<li>
+<p>One client running OpenBSD named CLIENT1 that will have the ability to surf the web using Firefox</p>
+</li>
+<li>
+<p>One app server for running applications such as smb and http</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The OpenBSD Transparent Proxy Server TLG is comprised of one subnet:
+* An intranet, known as the Busnet subnet (192.168.100.0/24)
+The machines on each of the respective subnets are connected using a physical hub or switch, or a virtual switch.</p>
+</div>
+<div class="sect2">
+<h3 id="truenetwork-design"><a class="anchor" href="#truenetwork-design"></a>Network Design</h3>
+<div class="imageblock text-center">
+<div class="content">
+<img src="networkdiagram.jpg" alt="Network Diagram for OpenBSD Environment">
+</div>
+</div>
+<div class="sect3">
+<h4 id="truefirewall"><a class="anchor" href="#truefirewall"></a>Firewall</h4>
+<div class="paragraph">
+<p>IP Address: 192.168.100.1/24</p>
+</div>
+<div class="paragraph">
+<p>Hostname: firewall.college.com</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>The Firewall’s purpose is to handle traffic between the Intranet and Internet. This means that it will act as a router directing traffic. There are two interfaces on Firewall, one is the external/Internet-facing called em0 and the other is the internal/Intranet-facing called em1.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truedc1"><a class="anchor" href="#truedc1"></a>DC1</h4>
+<div class="paragraph">
+<p>IP Address: 192.168.100.2</p>
+</div>
+<div class="paragraph">
+<p>Gateway: 192.168.100.1</p>
+</div>
+<div class="paragraph">
+<p>Hostname: dc1.college.com</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>This will be configured as the Intranet’s Domain Name System (DNS) and the Dynamic Host Configuration Protocol (DHCP) server.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueapp1"><a class="anchor" href="#trueapp1"></a>App1</h4>
+<div class="paragraph">
+<p>IP Address: 192.168.100.3</p>
+</div>
+<div class="paragraph">
+<p>Gateway: 192.168.100.1</p>
+</div>
+<div class="paragraph">
+<p>DNS Server: 192.168.100.2</p>
+</div>
+<div class="paragraph">
+<p>Hostname: app1.college.com</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>This is an internal web and application server.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueclient1"><a class="anchor" href="#trueclient1"></a>Client1</h4>
+<div class="paragraph">
+<p>IP Address: Dynamic</p>
+</div>
+<div class="paragraph">
+<p>DNS Server: 192.168.100.2</p>
+</div>
+<div class="paragraph">
+<p>Hostname: client1.college.com</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Client1 is a workstation that has the ability to switch between the Intranet and Internet subnet.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truehardware-and-software-requirements"><a class="anchor" href="#truehardware-and-software-requirements"></a>Hardware and Software Requirements</h3>
+<div class="paragraph">
+<p>Minimum requirements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Four functioning computers or VMs for configuration with OpenBSD installed.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueusing-sudo"><a class="anchor" href="#trueusing-sudo"></a>Using “Sudo”</h3>
+<div class="paragraph">
+<p>When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueconfiguring-the-environment"><a class="anchor" href="#trueconfiguring-the-environment"></a>Configuring the Environment</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="truestep-one-configuring-the-firewall"><a class="anchor" href="#truestep-one-configuring-the-firewall"></a><strong>Step One - Configuring the Firewall</strong></h3>
+<div class="paragraph">
+<p>The below instructions detail the setup of Firewall.  Here you will give your firewall a hostname, configure it for IP forwarding and set the IP addresses for it two interfaces</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure hostname on Firewall</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Elevate to root</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>su -</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Get nano text installer</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>pkg_add nano</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: To exit out of nano hit ctrl-x, press y to confirm the changes and press enter.</p>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Change the hostname</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>nano /etc/myname</code></p>
+</li>
+<li>
+<p>Enter the following: <code>fw.college.com</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure networking on Firewall</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Enable IP Forwarding</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'net.inet.ip.forwarding=1' &gt;&gt; /etc/sysctl.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Enable DHCP on em0</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'dhcp' &gt; /etc/hostname.em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Give internal interface (em1) a static IP</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'inet 192.168.100.1 255.255.255.0 192.168.100.255' &gt; /etc/hostname.em1</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart Networking</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>sh /etc/netstart</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-nat"><a class="anchor" href="#trueconfiguring-nat"></a>Configuring NAT</h3>
+<div class="paragraph">
+<p>Here we will configure Network Address Translation so that our internal computers can get to the Internet</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit firewall configuration file</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>nano /etc/pf.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note
+In my case em0 was my external interface yours might be different
+Same thing for the IP 10.0.2.15, this is my external IP address yours might be different</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Add the following line at the bottom of pf.conf:</p>
+<div class="listingblock">
+<div class="content">
+<pre>match out on em0 from 192.168.100.0/24 to any nat-to 10.0.2.15
+pass out on em0 from 192.168.100.0/24 to any nat-to 10.0.2.15</pre>
+</div>
+</div>
+</li>
+<li>
+<p>It should look like this:</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="natrules.jpg" alt="Image of nat rules with format">
+</div>
+</div>
+</li>
+<li>
+<p>Apply changes to firewall</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>pfctl -f /etc/pf.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Enable IP Forwarding</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Enable IP forwarding so our internal addresses can reach the internet</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo  'net.inet.ip.forwarding=1' &gt;&gt; /etc/sysctl.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Add this line if you intend on using IPv6</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo  'net.inet6.ip6.forwarding=1' &gt;&gt; /etc/sysctl.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart your firewall</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>reboot</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>To test this on one of your internal clients see if you can reach an external server</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>ping 1.1.1.1</code></p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>You should see something like this</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="natping.jpg" alt="demonstration of nat in action with ping">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truesnapshot-the-configuration"><a class="anchor" href="#truesnapshot-the-configuration"></a>Snapshot the Configuration</h3>
+<div class="paragraph">
+<p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truestep-two-configuring-the-dc"><a class="anchor" href="#truestep-two-configuring-the-dc"></a><strong>Step Two - Configuring the DC</strong></h3>
+<div class="paragraph">
+<p>The below instructions detail the setup of your domain controller (DC).  Here you will configure DC’s hostname and IP address</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure hostname on DC</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Elevate to root</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>su -</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: To save and exit in vi mode type :wq</p>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Change the hostname</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/myname</code></p>
+</li>
+<li>
+<p>Enter the following: <code>dc01.college.com</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure networking on DC</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Set gateway</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>nano /etc/mygate</code></p>
+</li>
+<li>
+<p>Enter the following: "192.168.100.1"</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Give your Client an IP address</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'inet 192.168.100.2 255.255.255.0 192.168.100.255' &gt; /etc/hostname.em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart Networking</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>sh /etc/netstart</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-dhcp"><a class="anchor" href="#trueconfiguring-dhcp"></a>Configuring DHCP</h3>
+<div class="paragraph">
+<p>Here you will configure dc as a DHCP server for your network to automatically assign addresses</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure DHCP on DC</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Enable DHCP to run at boot</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>rcctl enable dhcpd</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Set DHCP flags so that DHCP traffic can be sent out</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>rcctl set dhcpd flags em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Enter the dhcp file end enter the following information for a DHCP client’s network settings</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/dhcpd.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    subnet 192.168.100.0 netmask 255.255.255.0 {
+    	option routers 192.168.100.1;
+	    option domain-name-servers 192.168.100.2;
+	    range 192.168.100.5 192.168.100.254;
+    }</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-dns"><a class="anchor" href="#trueconfiguring-dns"></a>Configuring DNS</h3>
+<div class="paragraph">
+<p>Here Domain Name Services (DNS) will be configured on DC so that computers inside your network can navigate to outside websites via their hostnames</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enable unbound to run at boot</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>rcctl enable unbound</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit the unbound configuration file so that it looks like the following</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>vi /var/unbound/etc/unbound.conf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre>server:
+        interface: 192.168.100.2
+        #interface: 127.0.0.1
+        access-control: 192.168.100.0/24 allow
+        hide-identity: yes
+        hide-version: yes
+
+# DNS for Internal LAN
+local-zone: "college.com." static
+
+local-data: "firewall.college.com. IN A 192.168.100.1"
+local-data: "dc01.college.com. IN A 192.168.100.2"
+local-data: "app1.college.com. IN A 192.168.100.3"
+
+local-data-ptr: "192.168.100.1 firewall.college.com"
+local-data-ptr: "192.168.100.2 dc01.college.com"
+local-data-ptr: "192.168.100.3 app1.college.com"</pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="unboundconf.jpg" alt="configuration for unbound dns">
+</div>
+</div>
+</li>
+<li>
+<p>After the records add the forward zones in the same file</p>
+<div class="listingblock">
+<div class="content">
+<pre>forward-zone:
+    name: "."                               #use for ALL queries
+    forward-addr: 8.8.8.8@53                #example address only
+    forward-addr: 192.168.100.1
+    forward-addr: 127.0.0.1@53
+    forward-addr: 1.1.1.1@53
+    forward-addr: 9.9.9.9@53</pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="forwardzone.jpg" alt="rules for forward zones and ip addresses">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart the unbound service</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>rcctl restart unbound</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit "/etc/resolv.conf" on dc01</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Edit "/etc/resolv.conf" on dc01 so it looks like this</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/resolv.conf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre>nameserver 8.8.8.8
+nameserver 127.0.0.1</pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="localhostnameserver.jpg" alt="Nameserver config on dc1">
+</div>
+</div>
+</li>
+<li>
+<p>You should be able to <code>ping google.com</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit "/etc/resolv.conf" on any machine using dc01 for DNS</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Edit "/etc/resolv.conf" so it looks like this</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/resolv.conf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre>nameserver 192.168.100.2</pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="dc1nameserverdns.jpg" alt="namerserver config for dc1 dns">
+</div>
+</div>
+</li>
+<li>
+<p>You should be able to <code>ping google.com</code></p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="dc1dnsping.jpg" alt="dc1 dns ping example">
+</div>
+</div>
+</li>
+<li>
+<p>And also have successful name resolutions in your LAN</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="nslookupdns.jpg" alt="nslookup example for dns">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truesnapshot-the-configuration-2"><a class="anchor" href="#truesnapshot-the-configuration-2"></a>Snapshot the Configuration</h3>
+<div class="paragraph">
+<p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truestep-three-configuring-the-client"><a class="anchor" href="#truestep-three-configuring-the-client"></a><strong>Step Three - Configuring the Client</strong></h3>
+<div class="paragraph">
+<p>The below instructions detail the setup of Client.  Here you will configure Client’s hostname and IP address</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure hostname on Client</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Elevate to root</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>su -</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Change the hostname</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/myname</code></p>
+</li>
+<li>
+<p>Enter the following: <code>client1.college.com</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure networking on Client</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Set gateway</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>nano /etc/mygate</code></p>
+</li>
+<li>
+<p>Enter the following: "192.168.100.1"</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Give your Client an IP address</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'inet 192.168.100.4 255.255.255.0 192.168.100.255' &gt; /etc/hostname.em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart Networking</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>sh /etc/netstart</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-client-to-use-dhcp"><a class="anchor" href="#trueconfiguring-client-to-use-dhcp"></a>Configuring Client to use DHCP</h3>
+<div class="paragraph">
+<p>Here you will configure DHCP on your clients so that they get their IP Addresses automatically assigned</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure DHCP on Client</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Enable DHCP to run at boot</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>rcctl enable dhcpd</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Set DHCP flags so that DHCP traffic can be sent out</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>rcctl set dhcpd flags em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Write to the networking file dhcp so client receives an address from dc01</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo “dhcp” &gt; /etc/hostname.em0</code></p>
+</li>
+<li>
+<p><code>sh /etc/restart</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>You should get a message saying you received an ip address:</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="dhcpleaseaccept.jpg" alt="Message for dhcp lease accepted">
+</div>
+</div>
+</li>
+<li>
+<p>If you don’t then rebooting your machine might get you an address</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>reboot</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truesnapshot-the-configuration-3"><a class="anchor" href="#truesnapshot-the-configuration-3"></a>Snapshot the Configuration</h3>
+<div class="paragraph">
+<p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truestep-four-configure-app1"><a class="anchor" href="#truestep-four-configure-app1"></a><strong>Step Four - Configure App1</strong></h3>
+<div class="paragraph">
+<p>The below instructions detail the setup of your application server.  Here you will configure app1’s hostname and IP address</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure hostname on App1</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Elevate to root</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>su -</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Change the hostname</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>vi /etc/myname</code></p>
+</li>
+<li>
+<p>Enter the following: <code>app1.college.com</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Configure networking on App1</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Set gateway</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>nano /etc/mygate</code></p>
+</li>
+<li>
+<p>Enter the following: "192.168.100.1"</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Give your Client an IP address</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>echo 'inet 192.168.100.3 255.255.255.0 192.168.100.255' &gt; /etc/hostname.em0</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Restart Networking</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>sh /etc/netstart</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-httpd"><a class="anchor" href="#trueconfiguring-httpd"></a>Configuring HTTPD</h3>
+<div class="paragraph">
+<p>Here app1 will be configured so that it runs an apache (httpd) web server</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enable httpd to start at boot</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>rcctl enable httpd</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Copy example httpd.conf file to "/etc" directory</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>cp /etc/examples/httpd.conf /etc</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Delete SSL configurations from "httpd.conf"</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>vi /etc/httpd.conf</code></p>
+</li>
+<li>
+<p>Navigate to where the configuration for ssl starts, might look something like this:</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="ssldelete.jpg" alt="picture of what is going to be deleted for ssl">
+</div>
+</div>
+</li>
+<li>
+<p>In vi make sure your curso is above the tls settings like this</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="ssldeletecursor.jpg" alt="cursor position for the command to delete the ssl configs">
+</div>
+</div>
+</li>
+<li>
+<p>To get rid of all lines below where your cursor is do</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>:+,$d</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check for syntax errors in file</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>httpd -n</code></p>
+</li>
+<li>
+<p>If there are no errors then start the service
+Start the service</p>
+</li>
+<li>
+<p><code>rcctl start httpd</code>
+Check to see if you get a response from your firewall</p>
+</li>
+<li>
+<p><code>pkg_add</code></p>
+</li>
+<li>
+<p><code>curl “192.168.100.3”</code></p>
+</li>
+<li>
+<p>You should get back something like this:</p>
+<div class="imageblock text-center">
+<div class="content">
+<img src="curlssl.jpg" alt="curl example to test the ssl">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit app1’s firewall to allow port 80 traffic and restart the firewall</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If you want this webserver to be viewed by the outside word</p>
+</li>
+<li>
+<p><code>nano /etc/examples/pf.conf</code></p>
+</li>
+<li>
+<p>Add pass in on egress proto tcp from any to any port 80</p>
+</li>
+<li>
+<p><code>pfctl -f /etc/examples/pf.conf</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit firewall</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>nano /etc/examples/pf.conf</code></p>
+</li>
+<li>
+<p>pass in on egress proto tcp from any to any port 80</p>
+</li>
+<li>
+<p><code>pfctl -f /etc/examples/pf.conf</code></p>
+</li>
+<li>
+<p><code>nano /etc/rc.conf.local</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Got back to App1 and allow for http flags</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>nano /etc/rc.conf.local</code></p>
+</li>
+<li>
+<p><code>httpd_flags=</code></p>
+</li>
+<li>
+<p><code>pkg_scripts=”httpd”</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Test connection on firewall</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>curl “192.168.100.3”</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You should see the following:</p>
+</div>
+<div class="paragraph">
+<p>+
+image::curlipapp1.jpg[firewall test connection to app1, align="center"]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguring-smb"><a class="anchor" href="#trueconfiguring-smb"></a>Configuring SMB</h3>
+<div class="paragraph">
+<p>Here app1 will be configured to host a samba server that can be used to share files across your network from multiple different computers</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download SMB</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>pkg_add samba</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Enable SMB to start at boot</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>rcctl enable smbd nmbd</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Edit the Configuration file if you want</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>vi /etc/samba/smb.conf</code> (you can use previous config)</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a directory for SMB service</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>mkdir -p /home/samba</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Change permission to nobody so that multiple people can get to the shares</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>chown nobody:nobody /home/samba</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Start the service</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>rcctl start smbd nmbd</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truesnapshot-the-configuration-4"><a class="anchor" href="#truesnapshot-the-configuration-4"></a>Snapshot the Configuration</h3>
+<div class="paragraph">
+<p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truetroubleshooting"><a class="anchor" href="#truetroubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To test network connectivity run <code>ping 8.8.8.8</code>. If it fails, run <code>ping 192.168.100.1</code> to see if you can ping the router. If you can’t ping the router make sure your computer is on the correct network. If you can but you can’t reach 8.8.8.8, make sure the computer has an ip address and that NAT is working properly.</p>
+</div>
+<div class="paragraph">
+<p>If you look up any error codes or messages you are getting, most of the time someone has ran into the same problem and you can find the solution.</p>
+</div>
+<div class="paragraph">
+<p>If you run <code>ping google.com</code> and it fails but you can <code>ping 8.8.8.8</code> then the problem is with your DNS configuration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truecontributors"><a class="anchor" href="#truecontributors"></a>Contributors</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Brandon Ledyard</p>
+</li>
+<li>
+<p>Michael Pare</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-04-27 23:40:43 -0400
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+</body>
+</html>

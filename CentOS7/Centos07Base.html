@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.8.dev">
 <title>Base Lab Configuration For CentOS 7</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -240,7 +240,7 @@ table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;pad
 pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
 pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock{margin:0 1em 1.25em 1.5em;display:table}
-.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
 .quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
 .quoteblock blockquote{margin:0;padding:0;border:0}
 .quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
@@ -257,8 +257,7 @@ pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
 .quoteblock.abstract{margin:0 1em 1.25em;display:block}
 .quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
-.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
-.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin:0 0 1.25em;padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
 .quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
 .quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
 table.tableblock{max-width:100%;border-collapse:separate}
@@ -443,55 +442,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_introduction">Introduction</a>
+<li><a href="#trueabstract">Abstract</a></li>
+<li><a href="#trueintroduction">Introduction</a></li>
+<li><a href="#truedisclaimer">Disclaimer</a></li>
+<li><a href="#trueoverview-of-this-test-lab-guide">Overview of this Test Lab Guide</a>
 <ul class="sectlevel2">
-<li><a href="#_disclaimer">Disclaimer</a></li>
+<li><a href="#truenetwork-design">Network Design</a></li>
+<li><a href="#truehardware-and-software-requirements">Hardware and Software Requirements</a></li>
+<li><a href="#trueusing-sudo">Using “Sudo”</a></li>
 </ul>
 </li>
-<li><a href="#_network_design">Network Design</a></li>
-<li><a href="#_i_configure_firewall">I. Configure Firewall</a>
+<li><a href="#trueconfiguring-the-environment">Configuring the Environment</a>
 <ul class="sectlevel2">
-<li><a href="#_install_the_operating_system_on_firewall">Install the Operating System on Firewall</a></li>
-<li><a href="#_configure_tcpip">Configure TCP/IP</a></li>
-<li><a href="#_install_and_use_of_nano">Install and Use of Nano</a></li>
-<li><a href="#_configure_nat_rules">Configure NAT Rules</a></li>
+<li><a href="#truestep-one-configure-firewall"><strong>Step One - Configure Firewall</strong></a></li>
+<li><a href="#trueinstall-the-operating-system-on-firewall">Install the Operating System on Firewall</a></li>
+<li><a href="#trueconfigure-tcpip">Configure TCP/IP</a></li>
+<li><a href="#trueinstall-and-use-of-nano">Install and Use of Nano</a></li>
+<li><a href="#trueconfigure-nat-rules">Configure NAT Rules</a></li>
+<li><a href="#truestep-two-configure-dc1"><strong>Step Two - Configure DC1</strong></a></li>
+<li><a href="#trueinstall-the-operating-system-on-dc1">Install the Operating System on DC1</a></li>
+<li><a href="#trueconfigure-tcpip-on-dc1">Configure TCP/IP on DC1</a></li>
+<li><a href="#trueinstall-and-use-of-nano-2">Install and Use of Nano</a></li>
+<li><a href="#trueconfigure-dc1-as-dns-server">Configure DC1 as DNS Server</a></li>
+<li><a href="#truereconfigure-tcpip-on-dc1">Reconfigure TCP/IP on DC1</a></li>
+<li><a href="#trueconfigure-dhcp-on-dc1">Configure DHCP on DC1</a></li>
+<li><a href="#truestep-four-configure-app1"><strong>Step Four - Configure App1</strong></a></li>
+<li><a href="#trueinstall-the-operating-system-on-app1">Install the Operating System on App1</a></li>
+<li><a href="#trueconfigure-tcpip-on-app1">Configure TCP/IP on App1</a></li>
+<li><a href="#trueinstall-and-use-of-nano-3">Install and Use of Nano</a></li>
+<li><a href="#trueinstall-web-server-role-on-app1">Install Web Server Role on App1</a></li>
+<li><a href="#trueconfigure-file-sharing-on-app1">Configure File Sharing on App1</a></li>
+<li><a href="#truestep-four-configure-client1"><strong>Step Four - Configure Client1</strong></a></li>
+<li><a href="#trueinstall-the-operating-system-on-client1">Install the Operating System on Client1</a></li>
+<li><a href="#trueconfigure-tcpip-on-client1">Configure TCP/IP on Client1</a></li>
+<li><a href="#trueinstall-gui">Install GUI</a></li>
+<li><a href="#truetest-access-to-resources-on-busnet-subnet">Test Access to Resources on BUSNET Subnet</a></li>
 </ul>
 </li>
-<li><a href="#_ii_configure_dc1">II. Configure DC1</a>
+<li><a href="#truetroubleshooting">Troubleshooting</a>
 <ul class="sectlevel2">
-<li><a href="#_install_the_operating_system_on_dc1">Install the Operating System on DC1</a></li>
-<li><a href="#_configure_tcpip_on_dc1">Configure TCP/IP on DC1</a></li>
-<li><a href="#_install_and_use_of_nano_2">Install and Use of Nano</a></li>
-<li><a href="#_configure_dc1_as_dns_server">Configure DC1 as DNS Server</a></li>
-<li><a href="#_reconfigure_tcpip_on_dc1">Reconfigure TCP/IP on DC1</a></li>
-<li><a href="#_configure_dhcp_on_dc1">Configure DHCP on DC1</a></li>
+<li><a href="#truelocation-to-logs-configuration-files">Location to Logs &amp; Configuration Files</a></li>
+<li><a href="#truei-firewall-installing-nano-cannot-install-nano">I. Firewall - Installing Nano - Cannot install nano</a></li>
+<li><a href="#trueii-firewall-systemctl-restart-network">II. Firewall - systemctl restart network</a></li>
+<li><a href="#trueiii-firewall-tcpdump">III. Firewall - tcpdump</a></li>
 </ul>
 </li>
-<li><a href="#_iii_configure_app1">III. Configure App1</a>
-<ul class="sectlevel2">
-<li><a href="#_install_the_operating_system_on_app1">Install the Operating System on App1</a></li>
-<li><a href="#_configure_tcpip_on_app1">Configure TCP/IP on App1</a></li>
-<li><a href="#_install_and_use_of_nano_3">Install and Use of Nano</a></li>
-<li><a href="#_install_web_server_role_on_app1">Install Web Server Role on App1</a></li>
-<li><a href="#_configure_file_sharing_on_app1">Configure File Sharing on App1</a></li>
-</ul>
-</li>
-<li><a href="#_iv_configure_client1">IV. Configure Client1</a>
-<ul class="sectlevel2">
-<li><a href="#_install_the_operating_system_on_client1">Install the Operating System on Client1</a></li>
-<li><a href="#_configure_tcpip_on_client1">Configure TCP/IP on Client1</a></li>
-<li><a href="#_install_gui">Install GUI</a></li>
-<li><a href="#_test_access_to_resources_on_busnet_subnet">Test Access to Resources on BUSNET Subnet</a></li>
-</ul>
-</li>
-<li><a href="#_troubleshooting">Troubleshooting</a>
-<ul class="sectlevel2">
-<li><a href="#_location_to_logs_configuration_files">Location to Logs &amp; Configuration Files</a></li>
-<li><a href="#_i_firewall_installing_nano_cannot_install_nano">I. Firewall - Installing Nano - Cannot install nano</a></li>
-<li><a href="#_ii_firewall_systemctl_restart_network">II. Firewall - systemctl restart network</a></li>
-<li><a href="#_iii_firewall_tcpdump">III. Firewall - tcpdump</a></li>
-</ul>
-</li>
+<li><a href="#truecontributors">Contributors</a></li>
 </ul>
 </div>
 </div>
@@ -505,8 +501,48 @@ version 0.1, 2020-04-12</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_introduction">Introduction</h2>
+<h2 id="trueabstract"><a class="anchor" href="#trueabstract"></a>Abstract</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using CentOS 7 servers and a CentOS 7 client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the CentOS 7 Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a CentOS 7 based environment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueintroduction"><a class="anchor" href="#trueintroduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.</p>
+</div>
+<div class="paragraph">
+<p>This TLG is written with the goals of reusability and extensibility in mind. The purpose of this particular TLG is to enable the creation of a basic network utilizing CentOS 7 as the central operating system. Once this network is complete several other TLGs can be built on top of this base configuration.</p>
+</div>
+<div class="paragraph">
+<p>Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Highlight and right-click a command from this document</p>
+</li>
+<li>
+<p>Click Copy</p>
+</li>
+<li>
+<p>Right-click in the virtual machine where you would like to copy the text to and click Paste</p>
+</li>
+<li>
+<p>If you are working inside a terminal, you may only need to right click in order to copy the command over</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p><strong>Terminology</strong></p>
 </div>
@@ -532,8 +568,11 @@ PTR Records.<br>
 Samba.<br>
 Xfce Desktop Environment.<br></p>
 </div>
-<div class="sect2">
-<h3 id="_disclaimer">Disclaimer</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truedisclaimer"><a class="anchor" href="#truedisclaimer"></a>Disclaimer</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>This website contains work created for informational purposes. Information may be out of date or changed or updated without notice. By using this website, you recognize and agree that all information is provided “AS IS” without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
 </div>
@@ -542,10 +581,17 @@ Xfce Desktop Environment.<br></p>
 </div>
 </div>
 </div>
-</div>
 <div class="sect1">
-<h2 id="_network_design">Network Design</h2>
+<h2 id="trueoverview-of-this-test-lab-guide"><a class="anchor" href="#trueoverview-of-this-test-lab-guide"></a>Overview of this Test Lab Guide</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>This document contains instructions for settings up the CentOS 7 base configuration test lab by deploying two servers running CentOS 7, one client running CentOS 7 and one firewall built on CentOS 7. Once completed, the lab will simulate the functioning of a private intranet.</p>
+</div>
+<div class="paragraph">
+<p>Important: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual).</p>
+</div>
+<div class="sect2">
+<h3 id="truenetwork-design"><a class="anchor" href="#truenetwork-design"></a>Network Design</h3>
 <div class="imageblock text-center">
 <div class="content">
 <img src="networkdiagram.jpg" alt="network diagram">
@@ -621,15 +667,38 @@ IP Address: Dynamic</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="truehardware-and-software-requirements"><a class="anchor" href="#truehardware-and-software-requirements"></a>Hardware and Software Requirements</h3>
+<div class="paragraph">
+<p>Minimum requirements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Four functioning computers or VMs for configuration with OpenBSD installed.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueusing-sudo"><a class="anchor" href="#trueusing-sudo"></a>Using “Sudo”</h3>
+<div class="paragraph">
+<p>When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="_i_configure_firewall">I. Configure Firewall</h2>
+<h2 id="trueconfiguring-the-environment"><a class="anchor" href="#trueconfiguring-the-environment"></a>Configuring the Environment</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="truestep-one-configure-firewall"><a class="anchor" href="#truestep-one-configure-firewall"></a><strong>Step One - Configure Firewall</strong></h3>
 <div class="paragraph lead">
 <p>The below instructions detail the installation and setup of Firewall. The last section, Troubleshooting, has some information on common problems that people come across.</p>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_install_the_operating_system_on_firewall">Install the Operating System on Firewall</h3>
+<h3 id="trueinstall-the-operating-system-on-firewall"><a class="anchor" href="#trueinstall-the-operating-system-on-firewall"></a>Install the Operating System on Firewall</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -720,7 +789,7 @@ IP Address: Dynamic</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip">Configure TCP/IP</h3>
+<h3 id="trueconfigure-tcpip"><a class="anchor" href="#trueconfigure-tcpip"></a>Configure TCP/IP</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -802,7 +871,7 @@ IP Address: Dynamic</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_and_use_of_nano">Install and Use of Nano</h3>
+<h3 id="trueinstall-and-use-of-nano"><a class="anchor" href="#trueinstall-and-use-of-nano"></a>Install and Use of Nano</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -812,7 +881,7 @@ IP Address: Dynamic</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_nat_rules">Configure NAT Rules</h3>
+<h3 id="trueconfigure-nat-rules"><a class="anchor" href="#trueconfigure-nat-rules"></a>Configure NAT Rules</h3>
 <div class="literalblock">
 <div class="content">
 <pre>This will allow the system to act as a router and to allow traffic from the internal network out to the external network.</pre>
@@ -909,16 +978,14 @@ iptables -P OUTPUT ACCEPT</pre>
 <p><span class="icon yellow"><i class="fa fa-star"></i></span> Congratulations, Firewall is now configured.</p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_ii_configure_dc1">II. Configure DC1</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="truestep-two-configure-dc1"><a class="anchor" href="#truestep-two-configure-dc1"></a><strong>Step Two - Configure DC1</strong></h3>
 <div class="paragraph lead">
 <p>The below instructions detail the installation and setup of DC1. The last section, Troubleshooting, has some information on common problems that people come across.</p>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_install_the_operating_system_on_dc1">Install the Operating System on DC1</h3>
+<h3 id="trueinstall-the-operating-system-on-dc1"><a class="anchor" href="#trueinstall-the-operating-system-on-dc1"></a>Install the Operating System on DC1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1009,7 +1076,7 @@ iptables -P OUTPUT ACCEPT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_on_dc1">Configure TCP/IP on DC1</h3>
+<h3 id="trueconfigure-tcpip-on-dc1"><a class="anchor" href="#trueconfigure-tcpip-on-dc1"></a>Configure TCP/IP on DC1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1075,7 +1142,7 @@ iptables -P OUTPUT ACCEPT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_and_use_of_nano_2">Install and Use of Nano</h3>
+<h3 id="trueinstall-and-use-of-nano-2"><a class="anchor" href="#trueinstall-and-use-of-nano-2"></a>Install and Use of Nano</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1085,7 +1152,7 @@ iptables -P OUTPUT ACCEPT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_dc1_as_dns_server">Configure DC1 as DNS Server</h3>
+<h3 id="trueconfigure-dc1-as-dns-server"><a class="anchor" href="#trueconfigure-dc1-as-dns-server"></a>Configure DC1 as DNS Server</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1210,7 +1277,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reconfigure_tcpip_on_dc1">Reconfigure TCP/IP on DC1</h3>
+<h3 id="truereconfigure-tcpip-on-dc1"><a class="anchor" href="#truereconfigure-tcpip-on-dc1"></a>Reconfigure TCP/IP on DC1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1242,7 +1309,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_dhcp_on_dc1">Configure DHCP on DC1</h3>
+<h3 id="trueconfigure-dhcp-on-dc1"><a class="anchor" href="#trueconfigure-dhcp-on-dc1"></a>Configure DHCP on DC1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1283,16 +1350,14 @@ First, create the forwarder configuration.</p>
 <p><span class="icon yellow"><i class="fa fa-star"></i></span> Congratulations, DC1 is now configured.</p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_iii_configure_app1">III. Configure App1</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="truestep-four-configure-app1"><a class="anchor" href="#truestep-four-configure-app1"></a><strong>Step Four - Configure App1</strong></h3>
 <div class="paragraph lead">
 <p>The below instructions detail the installation and setup of App1. The last section, Troubleshooting, has some information on common problems that people come across.</p>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_install_the_operating_system_on_app1">Install the Operating System on App1</h3>
+<h3 id="trueinstall-the-operating-system-on-app1"><a class="anchor" href="#trueinstall-the-operating-system-on-app1"></a>Install the Operating System on App1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1383,7 +1448,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_on_app1">Configure TCP/IP on App1</h3>
+<h3 id="trueconfigure-tcpip-on-app1"><a class="anchor" href="#trueconfigure-tcpip-on-app1"></a>Configure TCP/IP on App1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1446,7 +1511,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_and_use_of_nano_3">Install and Use of Nano</h3>
+<h3 id="trueinstall-and-use-of-nano-3"><a class="anchor" href="#trueinstall-and-use-of-nano-3"></a>Install and Use of Nano</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1456,7 +1521,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_web_server_role_on_app1">Install Web Server Role on App1</h3>
+<h3 id="trueinstall-web-server-role-on-app1"><a class="anchor" href="#trueinstall-web-server-role-on-app1"></a>Install Web Server Role on App1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1478,7 +1543,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_file_sharing_on_app1">Configure File Sharing on App1</h3>
+<h3 id="trueconfigure-file-sharing-on-app1"><a class="anchor" href="#trueconfigure-file-sharing-on-app1"></a>Configure File Sharing on App1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1586,16 +1651,14 @@ First, create the forwarder configuration.</p>
 <p><span class="icon yellow"><i class="fa fa-star"></i></span> Congratulations, App1 is now configured.</p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_iv_configure_client1">IV. Configure Client1</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="truestep-four-configure-client1"><a class="anchor" href="#truestep-four-configure-client1"></a><strong>Step Four - Configure Client1</strong></h3>
 <div class="paragraph lead">
 <p>The below instructions detail the installation and setup of the Client. The last section, Troubleshooting, has some information on common problems that people come across.</p>
 </div>
+</div>
 <div class="sect2">
-<h3 id="_install_the_operating_system_on_client1">Install the Operating System on Client1</h3>
+<h3 id="trueinstall-the-operating-system-on-client1"><a class="anchor" href="#trueinstall-the-operating-system-on-client1"></a>Install the Operating System on Client1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1686,7 +1749,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_on_client1">Configure TCP/IP on Client1</h3>
+<h3 id="trueconfigure-tcpip-on-client1"><a class="anchor" href="#trueconfigure-tcpip-on-client1"></a>Configure TCP/IP on Client1</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1740,7 +1803,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_gui">Install GUI</h3>
+<h3 id="trueinstall-gui"><a class="anchor" href="#trueinstall-gui"></a>Install GUI</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1801,7 +1864,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test_access_to_resources_on_busnet_subnet">Test Access to Resources on BUSNET Subnet</h3>
+<h3 id="truetest-access-to-resources-on-busnet-subnet"><a class="anchor" href="#truetest-access-to-resources-on-busnet-subnet"></a>Test Access to Resources on BUSNET Subnet</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1873,10 +1936,10 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_troubleshooting">Troubleshooting</h2>
+<h2 id="truetroubleshooting"><a class="anchor" href="#truetroubleshooting"></a>Troubleshooting</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_location_to_logs_configuration_files">Location to Logs &amp; Configuration Files</h3>
+<h3 id="truelocation-to-logs-configuration-files"><a class="anchor" href="#truelocation-to-logs-configuration-files"></a>Location to Logs &amp; Configuration Files</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1889,7 +1952,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_i_firewall_installing_nano_cannot_install_nano">I. Firewall - Installing Nano - Cannot install nano</h3>
+<h3 id="truei-firewall-installing-nano-cannot-install-nano"><a class="anchor" href="#truei-firewall-installing-nano-cannot-install-nano"></a>I. Firewall - Installing Nano - Cannot install nano</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1941,7 +2004,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ii_firewall_systemctl_restart_network">II. Firewall - systemctl restart network</h3>
+<h3 id="trueii-firewall-systemctl-restart-network"><a class="anchor" href="#trueii-firewall-systemctl-restart-network"></a>II. Firewall - systemctl restart network</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1951,7 +2014,7 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_iii_firewall_tcpdump">III. Firewall - tcpdump</h3>
+<h3 id="trueiii-firewall-tcpdump"><a class="anchor" href="#trueiii-firewall-tcpdump"></a>III. Firewall - tcpdump</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2029,11 +2092,32 @@ First, create the forwarder configuration.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="truecontributors"><a class="anchor" href="#truecontributors"></a>Contributors</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Kelsey Ward</p>
+</li>
+<li>
+<p>LaKysha Rock</p>
+</li>
+<li>
+<p>Michael Pare</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-12 15:52:05 -0400
+Last updated 2020-04-27 23:44:10 -0400
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>

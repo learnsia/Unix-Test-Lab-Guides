@@ -1,15 +1,29 @@
 :toc: left
 = Test Lab Guide : Fedora Base Lab Configuration 
 
+Michael Pare <michael.pare@mymail.champlain.edu>
+Version 0.2, 2020-04-12
+
 == Abstract 
-This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using Fedora servers and a Fedora client. Those acquainted with the Microsoft TLG documentation will find the format familiar. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the Fedora Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a Fedora based environment.  
+
+This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using Fedora servers and a Fedora client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the Fedora Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a Fedora based environment.  
 
 == Introduction 
+
 The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.  
  
 This TLG is written with the goals of reusability and extensibility in mind. The purpose of this particular TLG is to enable the creation of a basic network utilizing Fedora as the central operating system. Once this network is complete several other TLGs can be built on top of this base configuration.  
  
 Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.
+
+****
+Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.
+
+* Highlight and right-click a command from this document
+* Click Copy
+* Right-click in the virtual machine where you would like to copy the text to and click Paste
+* If you are working inside a terminal, you may only need to right click in order to copy the command over
+****
 
 == Disclaimer
 
@@ -28,13 +42,18 @@ ANY DIRECT, INDIRECT, SPECIAL, OR OTHER CONSEQUENTIAL
 DAMAGES FOR ANY USE OF THE MATERIAL ON THIS WEBSITE. This
 includes, without limitation, damages for lost profits, business interruption, loss of data or business information, damage to computer equipment or networks, or other loss arising out of the use of any information in the guides
 
-== Contents of This Guide 
+== Overview of this Test Lab Guide
 
 This document contains instructions for settings up the Fedora base configuration test lab by deploying two servers running Fedora, one client running Fedora and one firewall built on Fedora. Once completed, the lab will simulate the functioning of a private intranet.  
 
 *Important*: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual). 
 
-=== Network Overview 
+=== Network Design
+
+Network Diagram:
+
+image::networkdiagram.jpg[Network Diagram for Fedora Environment, align="center"]
+
 
 The Fedora Base Configuration test lab consists of the following: 
 
@@ -66,13 +85,9 @@ The Fedora Base Configuration test lab consists of the following:
 *** Hostname: client1.business.com
 *** Will have ability to switch between the intranet and Internet subnets 
 
-The CentOS 7 Base Configuration TLG is comprised of one subnet: 
+The Fedora Base Configuration TLG is comprised of one subnet: 
 
 ** An intranet, known as the Internal subnet (192.168.240.0/24 in this example) 
-
-Network Diagram:
-
-image::networkdiagram.jpg[Network Diagram for Fedora Environment, align="center"]
 
 This document consists of four major parts: 
 
@@ -100,7 +115,12 @@ The following are the minimum required components for deploying the test lab:
 
 If the environment will be deployed in a virtualized environment, the virtual solution must support Fedora virtual machines (or  virtual linux machines in general). The server hardware must support the amount for RAM required to run the virtual operating systems included in the base configuration test lab with space for expansion as required by the additional TLGs.  
 
-== Steps for Configuring the Network 
+=== Using “Sudo”
+
+When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).
+
+== Configuring the Environment
+
 This test network consists of four machines: 
 
 1.	FW1 
@@ -577,6 +597,6 @@ image::wiredipv4.jpg[client1 wired config ipv4 page, align="center"]
  
 These settings will enable the client workstation to be fully functional in the context of this network environment.  
 
-.Contributors
-Evan Callaghan
-Michael Pare
+== Contributors
+* Evan Callaghan
+* Michael Pare

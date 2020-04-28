@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.8.dev">
 <title>Test Lab Guide : Fedora Base Lab Configuration</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -240,7 +240,7 @@ table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;pad
 pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
 pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock{margin:0 1em 1.25em 1.5em;display:table}
-.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
 .quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
 .quoteblock blockquote{margin:0;padding:0;border:0}
 .quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
@@ -257,8 +257,7 @@ pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
 .quoteblock.abstract{margin:0 1em 1.25em;display:block}
 .quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
-.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
-.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin:0 0 1.25em;padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
 .quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
 .quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
 table.tableblock{max-width:100%;border-collapse:separate}
@@ -435,6 +434,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -442,48 +442,50 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_abstract">Abstract</a></li>
-<li><a href="#_introduction">Introduction</a></li>
-<li><a href="#_disclaimer">Disclaimer</a></li>
-<li><a href="#_contents_of_this_guide">Contents of This Guide</a>
+<li><a href="#trueabstract">Abstract</a></li>
+<li><a href="#trueintroduction">Introduction</a></li>
+<li><a href="#truedisclaimer">Disclaimer</a></li>
+<li><a href="#trueoverview-of-this-test-lab-guide">Overview of this Test Lab Guide</a>
 <ul class="sectlevel2">
-<li><a href="#_network_overview">Network Overview</a></li>
-<li><a href="#_hardware_and_software_requirements">Hardware and Software Requirements</a></li>
+<li><a href="#truenetwork-design">Network Design</a></li>
+<li><a href="#truehardware-and-software-requirements">Hardware and Software Requirements</a></li>
+<li><a href="#trueusing-sudo">Using “Sudo”</a></li>
 </ul>
 </li>
-<li><a href="#_steps_for_configuring_the_network">Steps for Configuring the Network</a>
+<li><a href="#trueconfiguring-the-environment">Configuring the Environment</a>
 <ul class="sectlevel2">
-<li><a href="#_step_one_configure_fw1"><strong>Step One</strong> - Configure FW1</a></li>
-<li><a href="#_installing_the_operating_system">Installing the Operating System</a></li>
-<li><a href="#_configure_tcpip_properties">Configure TCP/IP Properties</a></li>
-<li><a href="#_configure_routing_rules">Configure Routing rules</a></li>
-<li><a href="#_step_two_configure_client1"><strong>Step Two</strong> - Configure CLIENT1</a></li>
-<li><a href="#_install_operating_system">Install Operating System</a></li>
-<li><a href="#_configure_tcpip_properties_test_configuration">Configure TCP/IP properties &amp; Test Configuration</a></li>
-<li><a href="#_step_three_configure_dc1"><strong>Step Three</strong> - Configure DC1</a></li>
-<li><a href="#_install_the_operating_system">Install the Operating System</a></li>
-<li><a href="#_configure_tcpip">Configure TCP/IP</a></li>
-<li><a href="#_installconfigure_dns">Install/Configure DNS</a></li>
-<li><a href="#_re_configure_tcpip">Re-configure TCP/IP</a></li>
-<li><a href="#_install_and_configure_dhcp">Install and Configure DHCP</a></li>
-<li><a href="#_configure_dhcp_and_dns_settings_on_client1">Configure DHCP and DNS settings on Client1</a></li>
-<li><a href="#_snapshot_the_configuration">Snapshot the Configuration</a></li>
-<li><a href="#_step_four_configure_app1"><strong>Step Four</strong> - Configure APP1</a></li>
-<li><a href="#_install_the_operating_system_2">Install the Operating System</a></li>
-<li><a href="#_configure_tcpip_properties_2">Configure TCP/IP Properties</a></li>
-<li><a href="#_configure_the_web_server">Configure the web server</a></li>
-<li><a href="#_configure_the_samba_share">Configure the samba share</a></li>
-<li><a href="#_test_web_server_access">Test web server access</a></li>
-<li><a href="#_test_samba_share_access">Test samba share access</a></li>
-<li><a href="#_snapshot_the_configuration_2">Snapshot the Configuration</a></li>
+<li><a href="#truestep-one-configure-fw1"><strong>Step One</strong> - Configure FW1</a></li>
+<li><a href="#trueinstalling-the-operating-system">Installing the Operating System</a></li>
+<li><a href="#trueconfigure-tcpip-properties">Configure TCP/IP Properties</a></li>
+<li><a href="#trueconfigure-routing-rules">Configure Routing rules</a></li>
+<li><a href="#truestep-two-configure-client1"><strong>Step Two</strong> - Configure CLIENT1</a></li>
+<li><a href="#trueinstall-operating-system">Install Operating System</a></li>
+<li><a href="#trueconfigure-tcpip-properties-test-configuration">Configure TCP/IP properties &amp; Test Configuration</a></li>
+<li><a href="#truestep-three-configure-dc1"><strong>Step Three</strong> - Configure DC1</a></li>
+<li><a href="#trueinstall-the-operating-system">Install the Operating System</a></li>
+<li><a href="#trueconfigure-tcpip">Configure TCP/IP</a></li>
+<li><a href="#trueinstallconfigure-dns">Install/Configure DNS</a></li>
+<li><a href="#truere-configure-tcpip">Re-configure TCP/IP</a></li>
+<li><a href="#trueinstall-and-configure-dhcp">Install and Configure DHCP</a></li>
+<li><a href="#trueconfigure-dhcp-and-dns-settings-on-client1">Configure DHCP and DNS settings on Client1</a></li>
+<li><a href="#truesnapshot-the-configuration">Snapshot the Configuration</a></li>
+<li><a href="#truestep-four-configure-app1"><strong>Step Four</strong> - Configure APP1</a></li>
+<li><a href="#trueinstall-the-operating-system-2">Install the Operating System</a></li>
+<li><a href="#trueconfigure-tcpip-properties-2">Configure TCP/IP Properties</a></li>
+<li><a href="#trueconfigure-the-web-server">Configure the web server</a></li>
+<li><a href="#trueconfigure-the-samba-share">Configure the samba share</a></li>
+<li><a href="#truetest-web-server-access">Test web server access</a></li>
+<li><a href="#truetest-samba-share-access">Test samba share access</a></li>
+<li><a href="#truesnapshot-the-configuration-2">Snapshot the Configuration</a></li>
 </ul>
 </li>
-<li><a href="#_additional_resources">Additional Resources</a>
+<li><a href="#trueadditional-resources">Additional Resources</a>
 <ul class="sectlevel2">
-<li><a href="#_how_to_give_a_user_sudo_privileges">How to give a user sudo privileges</a></li>
-<li><a href="#_final_client_configuration">Final Client Configuration</a></li>
+<li><a href="#truehow-to-give-a-user-sudo-privileges">How to give a user sudo privileges</a></li>
+<li><a href="#truefinal-client-configuration">Final Client Configuration</a></li>
 </ul>
 </li>
+<li><a href="#truecontributors">Contributors</a></li>
 </ul>
 </div>
 </div>
@@ -497,15 +499,15 @@ Version 0.2, 2020-04-12</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_abstract">Abstract</h2>
+<h2 id="trueabstract"><a class="anchor" href="#trueabstract"></a>Abstract</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using Fedora servers and a Fedora client. Those acquainted with the Microsoft TLG documentation will find the format familiar. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the Fedora Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a Fedora based environment.</p>
+<p>This Test Lab Guide (TLG) will provide the user with step-by-step instructions on how to configure a basic network configuration using Fedora servers and a Fedora client. The resulting test lab environment will provide a stable base for building other test labs. It is recommended that users preserve the start of their test machines once this walk-through has been successfully completed. In a physical environment the hard drive of the machine can be imaged. In a virtual environment, the “snapshot” or equivalent feature can be used to preserve the current state of the operating system. Preserving the working conditions of the basic test lab will allow the user to experiment without fear of having to completely rebuild their environment. The ultimate goal of the TLG is to familiarize the user with the Fedora Operating system and how to deploy common network services based on that operating system, and ultimately enable the user to conduct their own experiments in a Fedora based environment.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_introduction">Introduction</h2>
+<h2 id="trueintroduction"><a class="anchor" href="#trueintroduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The purpose of the Test Lab Guides (TLGs) is providing users with practical guidelines for deploying current operating systems in a way that results in a functional configuration. Using a TLG will instruct the user in which servers to create, how to configure the operating systems and services, and how to install and configure additional software. A TLG experience enables the user to experience the entire set-up process from start to finish.</p>
@@ -516,10 +518,33 @@ Version 0.2, 2020-04-12</p>
 <div class="paragraph">
 <p>Once this lab is completed, it would be wise to save the initial configuration. How this is best done will depend on how the test environment was originally deployed. A physical environment can be preserved by imaging the drives of each machine to be stored in a separate location and retrieved when needed. In a network deployed virtually, a snapshot can be taken of each machine. This will preserve the current settings and configurations. Preserving the lab in a functional state is important, because it allows for a functional configuration to be restored without completely repeating the base lab configuration steps. This is helpful for correcting after a mistake or generating a test environment for a new product.</p>
 </div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: If you are completing these TLG’s in a virtual environment using VMWare and have access to an electronic copy of this document, and you have VMWare Tools installed on the Virtual Machine, utilize the ability to copy and paste text from the host machine to the VM.  Copying and pasting will help to reduce typos and command errors.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Highlight and right-click a command from this document</p>
+</li>
+<li>
+<p>Click Copy</p>
+</li>
+<li>
+<p>Right-click in the virtual machine where you would like to copy the text to and click Paste</p>
+</li>
+<li>
+<p>If you are working inside a terminal, you may only need to right click in order to copy the command over</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_disclaimer">Disclaimer</h2>
+<h2 id="truedisclaimer"><a class="anchor" href="#truedisclaimer"></a>Disclaimer</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This website contains work created for informational purposes.
@@ -541,7 +566,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect1">
-<h2 id="_contents_of_this_guide">Contents of This Guide</h2>
+<h2 id="trueoverview-of-this-test-lab-guide"><a class="anchor" href="#trueoverview-of-this-test-lab-guide"></a>Overview of this Test Lab Guide</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This document contains instructions for settings up the Fedora base configuration test lab by deploying two servers running Fedora, one client running Fedora and one firewall built on Fedora. Once completed, the lab will simulate the functioning of a private intranet.</p>
@@ -550,7 +575,15 @@ includes, without limitation, damages for lost profits, business interruption, l
 <p><strong>Important</strong>: The instructions provided in this document are for educational purposes. They do not represent best practices nor are they recommendations for a production network. These configurations should not be put into place on a production network. This network should be deployed on a separate network specific to testing (physical or virtual).</p>
 </div>
 <div class="sect2">
-<h3 id="_network_overview">Network Overview</h3>
+<h3 id="truenetwork-design"><a class="anchor" href="#truenetwork-design"></a>Network Design</h3>
+<div class="paragraph">
+<p>Network Diagram:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="networkdiagram.jpg" alt="Network Diagram for Fedora Environment">
+</div>
+</div>
 <div class="paragraph">
 <p>The Fedora Base Configuration test lab consists of the following:</p>
 </div>
@@ -647,7 +680,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </ul>
 </div>
 <div class="paragraph">
-<p>The CentOS 7 Base Configuration TLG is comprised of one subnet:</p>
+<p>The Fedora Base Configuration TLG is comprised of one subnet:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -655,14 +688,6 @@ includes, without limitation, damages for lost profits, business interruption, l
 <p>An intranet, known as the Internal subnet (192.168.240.0/24 in this example)</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Network Diagram:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="networkdiagram.jpg" alt="Network Diagram for Fedora Environment">
-</div>
 </div>
 <div class="paragraph">
 <p>This document consists of four major parts:</p>
@@ -685,7 +710,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_hardware_and_software_requirements">Hardware and Software Requirements</h3>
+<h3 id="truehardware-and-software-requirements"><a class="anchor" href="#truehardware-and-software-requirements"></a>Hardware and Software Requirements</h3>
 <div class="paragraph">
 <p>The following are the minimum required components for deploying the test lab:</p>
 </div>
@@ -712,10 +737,16 @@ includes, without limitation, damages for lost profits, business interruption, l
 <p>If the environment will be deployed in a virtualized environment, the virtual solution must support Fedora virtual machines (or  virtual linux machines in general). The server hardware must support the amount for RAM required to run the virtual operating systems included in the base configuration test lab with space for expansion as required by the additional TLGs.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="trueusing-sudo"><a class="anchor" href="#trueusing-sudo"></a>Using “Sudo”</h3>
+<div class="paragraph">
+<p>When running many commands throughout these TLGs you may be required to use ‘sudo’ depending on the level of privilege the current user has.  The ‘sudo’ command allows the command following it to be run at superuser privileges.  It is important to note that the user must be in the ‘sudoers’ file in order to successfully use this command.  If you make the account an administrator while installing, it will be added to the ‘sudoers’ file automatically.  Once a command is preceded by ‘sudo’ the user will be prompted for the password for the account and then the command can be run at superuser privilege.  For details on how to give a user ‘sudo’ privilege see the Appendix (How to Give a User to Sudo Privileges).</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_steps_for_configuring_the_network">Steps for Configuring the Network</h2>
+<h2 id="trueconfiguring-the-environment"><a class="anchor" href="#trueconfiguring-the-environment"></a>Configuring the Environment</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This test network consists of four machines:</p>
@@ -740,7 +771,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 <p>You must be logged on as a user who can execute <code>sudo</code> commands to complete this TLG. The steps to configure each machine are below.</p>
 </div>
 <div class="sect2">
-<h3 id="_step_one_configure_fw1"><strong>Step One</strong> - Configure FW1</h3>
+<h3 id="truestep-one-configure-fw1"><a class="anchor" href="#truestep-one-configure-fw1"></a><strong>Step One</strong> - Configure FW1</h3>
 <div class="paragraph">
 <p>The FW1 machine will act as a firewall/router for the network. Configuring FW1 will consist of:</p>
 </div>
@@ -759,7 +790,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installing_the_operating_system">Installing the Operating System</h3>
+<h3 id="trueinstalling-the-operating-system"><a class="anchor" href="#trueinstalling-the-operating-system"></a>Installing the Operating System</h3>
 <div class="paragraph">
 <p>The first step is to install Fedora Server 27  on the machine that will be used as the router.  The hardware for this machine must include two NICs if running the operating system in a physical environment. If utilizing a virtual environment, please ensure that the virtual machine for this system includes two network cards in its virtual hardware. Instructions on how to do this are below.</p>
 </div>
@@ -827,7 +858,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_properties">Configure TCP/IP Properties</h3>
+<h3 id="trueconfigure-tcpip-properties"><a class="anchor" href="#trueconfigure-tcpip-properties"></a>Configure TCP/IP Properties</h3>
 <div class="paragraph">
 <p>This operating has two NICs to be configured. One will act as the external network card and the other will act as the internal network card. It is important to be using an account that has <code>sudo</code> privileges or be in the root account, as many of the configurations require executive privilege. Commands noted with <code>sudo</code> can be executed without it if using a root user.</p>
 </div>
@@ -911,7 +942,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_routing_rules">Configure Routing rules</h3>
+<h3 id="trueconfigure-routing-rules"><a class="anchor" href="#trueconfigure-routing-rules"></a>Configure Routing rules</h3>
 <div class="paragraph">
 <p>Enable IP forwarding:</p>
 </div>
@@ -1009,7 +1040,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_two_configure_client1"><strong>Step Two</strong> - Configure CLIENT1</h3>
+<h3 id="truestep-two-configure-client1"><a class="anchor" href="#truestep-two-configure-client1"></a><strong>Step Two</strong> - Configure CLIENT1</h3>
 <div class="paragraph">
 <p>This is typically the last step of a networking guide, but setting up all the services prior to having any means of testing can lead to a knot of configuration errors. By configuring the end user device initially, and adapting to the new network services continually, we can ensure that each service works as it goes up. Many of these settings will be changed in the future. A final configuration will be included in the appendix. Configuration steps for basic functionality include:</p>
 </div>
@@ -1025,7 +1056,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_operating_system">Install Operating System</h3>
+<h3 id="trueinstall-operating-system"><a class="anchor" href="#trueinstall-operating-system"></a>Install Operating System</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1082,7 +1113,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_properties_test_configuration">Configure TCP/IP properties &amp; Test Configuration</h3>
+<h3 id="trueconfigure-tcpip-properties-test-configuration"><a class="anchor" href="#trueconfigure-tcpip-properties-test-configuration"></a>Configure TCP/IP properties &amp; Test Configuration</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1145,7 +1176,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_three_configure_dc1"><strong>Step Three</strong> - Configure DC1</h3>
+<h3 id="truestep-three-configure-dc1"><a class="anchor" href="#truestep-three-configure-dc1"></a><strong>Step Three</strong> - Configure DC1</h3>
 <div class="paragraph">
 <p>The DC1 machine will act as a DNS server and a DHCP server. Configuring DC1 will be include:</p>
 </div>
@@ -1176,7 +1207,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_the_operating_system">Install the Operating System</h3>
+<h3 id="trueinstall-the-operating-system"><a class="anchor" href="#trueinstall-the-operating-system"></a>Install the Operating System</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1203,7 +1234,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip">Configure TCP/IP</h3>
+<h3 id="trueconfigure-tcpip"><a class="anchor" href="#trueconfigure-tcpip"></a>Configure TCP/IP</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1301,7 +1332,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_installconfigure_dns">Install/Configure DNS</h3>
+<h3 id="trueinstallconfigure-dns"><a class="anchor" href="#trueinstallconfigure-dns"></a>Install/Configure DNS</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1496,7 +1527,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_re_configure_tcpip">Re-configure TCP/IP</h3>
+<h3 id="truere-configure-tcpip"><a class="anchor" href="#truere-configure-tcpip"></a>Re-configure TCP/IP</h3>
 <div class="paragraph">
 <p>After DNS has been configured, the TCP/IP settings of DC1 can be reconfigured to point to itself as the DNS server rather than the router.</p>
 </div>
@@ -1558,7 +1589,7 @@ includes, without limitation, damages for lost profits, business interruption, l
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_and_configure_dhcp">Install and Configure DHCP</h3>
+<h3 id="trueinstall-and-configure-dhcp"><a class="anchor" href="#trueinstall-and-configure-dhcp"></a>Install and Configure DHCP</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1649,7 +1680,7 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_dhcp_and_dns_settings_on_client1">Configure DHCP and DNS settings on Client1</h3>
+<h3 id="trueconfigure-dhcp-and-dns-settings-on-client1"><a class="anchor" href="#trueconfigure-dhcp-and-dns-settings-on-client1"></a>Configure DHCP and DNS settings on Client1</h3>
 <div class="paragraph">
 <p>The network settings will be configured through the graphical user interface on the client machine set up in Step 2.</p>
 </div>
@@ -1706,13 +1737,13 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_snapshot_the_configuration">Snapshot the Configuration</h3>
+<h3 id="truesnapshot-the-configuration"><a class="anchor" href="#truesnapshot-the-configuration"></a>Snapshot the Configuration</h3>
 <div class="paragraph">
 <p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_four_configure_app1"><strong>Step Four</strong> - Configure APP1</h3>
+<h3 id="truestep-four-configure-app1"><a class="anchor" href="#truestep-four-configure-app1"></a><strong>Step Four</strong> - Configure APP1</h3>
 <div class="paragraph">
 <p>APP1 will provide a web server and a Samba Share. Configuration steps for APP1 include:</p>
 </div>
@@ -1740,7 +1771,7 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_the_operating_system_2">Install the Operating System</h3>
+<h3 id="trueinstall-the-operating-system-2"><a class="anchor" href="#trueinstall-the-operating-system-2"></a>Install the Operating System</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1767,7 +1798,7 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_tcpip_properties_2">Configure TCP/IP Properties</h3>
+<h3 id="trueconfigure-tcpip-properties-2"><a class="anchor" href="#trueconfigure-tcpip-properties-2"></a>Configure TCP/IP Properties</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1846,7 +1877,7 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_the_web_server">Configure the web server</h3>
+<h3 id="trueconfigure-the-web-server"><a class="anchor" href="#trueconfigure-the-web-server"></a>Configure the web server</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1882,7 +1913,7 @@ At this point the DHCP server can be tested using the Client1 machine to ensure 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_the_samba_share">Configure the samba share</h3>
+<h3 id="trueconfigure-the-samba-share"><a class="anchor" href="#trueconfigure-the-samba-share"></a>Configure the samba share</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2007,7 +2038,7 @@ read only = no</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test_web_server_access">Test web server access</h3>
+<h3 id="truetest-web-server-access"><a class="anchor" href="#truetest-web-server-access"></a>Test web server access</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2028,7 +2059,7 @@ read only = no</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test_samba_share_access">Test samba share access</h3>
+<h3 id="truetest-samba-share-access"><a class="anchor" href="#truetest-samba-share-access"></a>Test samba share access</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2046,7 +2077,7 @@ read only = no</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_snapshot_the_configuration_2">Snapshot the Configuration</h3>
+<h3 id="truesnapshot-the-configuration-2"><a class="anchor" href="#truesnapshot-the-configuration-2"></a>Snapshot the Configuration</h3>
 <div class="paragraph">
 <p>Preserving a functional state of the machine is important in case changes are made accidently. This can be done using VMWare’s snapshot functionality or other software packages for hardware labs.</p>
 </div>
@@ -2054,10 +2085,10 @@ read only = no</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_additional_resources">Additional Resources</h2>
+<h2 id="trueadditional-resources"><a class="anchor" href="#trueadditional-resources"></a>Additional Resources</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_how_to_give_a_user_sudo_privileges">How to give a user sudo privileges</h3>
+<h3 id="truehow-to-give-a-user-sudo-privileges"><a class="anchor" href="#truehow-to-give-a-user-sudo-privileges"></a>How to give a user sudo privileges</h3>
 <div class="paragraph">
 <p>Most of the steps taken in this base lab require using the command <code>sudo</code>, which can only be executed by a user with those privileges.</p>
 </div>
@@ -2089,7 +2120,7 @@ read only = no</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_final_client_configuration">Final Client Configuration</h3>
+<h3 id="truefinal-client-configuration"><a class="anchor" href="#truefinal-client-configuration"></a>Final Client Configuration</h3>
 <div class="paragraph">
 <p>Included in this section is information regarding the final network configuration of the client workstation. These settings can be accessed by logging in to the client workstation and selecting drop down menu in the top right corner and then selecting “Wired Settings” under the Wired Connected section. This will open a new dialogue box. To access settings select the box with the gear icon under the Wired section.</p>
 </div>
@@ -2115,11 +2146,29 @@ read only = no</pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="truecontributors"><a class="anchor" href="#truecontributors"></a>Contributors</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Evan Callaghan</p>
+</li>
+<li>
+<p>Michael Pare</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-12 15:05:15 -0400
+Last updated 2020-04-27 23:42:55 -0400
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>
