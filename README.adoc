@@ -34,3 +34,12 @@ Please contact me:  dunston@champlain.edu
 ** Fedora 7 Add-on Labs
 *** Lab 1
 *** Lab 2
+
+* OpenBSD 6.6 
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/OpenBSD6.6/OpenBSD66Base.adoc[Read Online]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/OpenBSD6.6/OpenBSD66Base.pdf[PDF]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/OpenBSD6.6/OpenBSD66Base.xml[Docbook]
+** https://github.com/learnsia/Unix-Test-Lab-Guides/blob/master/OpenBSD6.6/OpenBSD66Base.epub[ePub]
+** OpenBSD 6.6 Add-on Labs
+*** Lab 1
+*** Lab 2
